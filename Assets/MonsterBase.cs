@@ -13,16 +13,24 @@ public class MonsterBase : MonoBehaviour
     }
     [SerializeField] State m_state;
 
-    [SerializeField] Transform m_target;
+    SpriteRenderer[] m_renderer;
+
+    Transform m_target;
+    Vector2 m_moveDir = Vector2.one;
 
     [Header("Status")]
     [SerializeField] int m_hp;
     [SerializeField] float m_moveSpeed;
     [SerializeField] float m_detectRange;
+    [SerializeField] float m_attackRange;
 
-    float m_IdleTime = 2f;
-    float m_ChaseTime = 2f;
+    float m_idleTime = 2f;
+    float m_attackCoolTime = 2f;
 
+    bool m_canAttack;
+
+    // 수정필요
+    float m_attackTime = 1;
 
 
     private void Start()
@@ -33,15 +41,15 @@ public class MonsterBase : MonoBehaviour
         StartCoroutine(nameof(StateMachine));
     }
 
+    private void Update()
+    {
+        
+    }
+
     IEnumerator StateMachine()
     {
-        Debug.Log("in StateMachine");
-
         while (m_hp > 0)
         {
-            string str = Util.EnumToString<State>(m_state);
-            Debug.Log(str);
-
             yield return StartCoroutine(m_state.ToString());
         }
     }
@@ -55,29 +63,40 @@ public class MonsterBase : MonoBehaviour
     {
         Vector3 randVec = new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), 0);
 
-        for (float i = 0; i < m_IdleTime; i += Time.deltaTime)
+        for (float i = 0; i < m_idleTime; i += Time.deltaTime)
         {
             transform.position += randVec * m_moveSpeed * Time.deltaTime;
+            m_moveDir.x = (randVec.normalized.x < 0 ? -1 : 1);
+            transform.localScale = m_moveDir;
             yield return new WaitForEndOfFrame();
         }
-        yield return null;
     }
 
     IEnumerator Chase()
     {
-        Vector3 chaseVec =(m_target.transform.position - transform.position).normalized;
+        Vector3 chaseDir = m_target.transform.position - transform.position;
 
-        for (float i = 0; i < m_ChaseTime; i += Time.deltaTime)
+        if (chaseDir.magnitude > 0.01f)
         {
-            transform.position += chaseVec * m_moveSpeed * Time.deltaTime;
+            transform.position += chaseDir.normalized * m_moveSpeed * Time.deltaTime;
+            m_moveDir.x = (chaseDir.normalized.x < 0 ? -1 : 1) ;
+            transform.localScale = m_moveDir;
+
             yield return new WaitForEndOfFrame();
         }
-        yield return null;
+
+        if (chaseDir.magnitude < m_attackRange)
+            ChangeState(State.Attack);
     }
 
     IEnumerator Attack()
     {
-        yield return null;
+        Util.ChangeColor(transform, Color.red);
+
+        yield return new WaitForSeconds(m_attackTime);
+        Util.ChangeColor(transform, Color.white);
+
+        ChangeState(State.Chase);
     }
 
     IEnumerator Hit()
@@ -108,7 +127,10 @@ public class MonsterBase : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        Gizmos.color = Color.red;
+        Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, m_detectRange);
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, m_attackRange);
     }
 }
