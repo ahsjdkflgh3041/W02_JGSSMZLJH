@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
@@ -29,19 +30,28 @@ public class PlayerController : MonoBehaviour
         m_ground = GetComponent<PlayerGround>();
     }
 
+    public void OnMove(InputAction.CallbackContext context)
+    {
+        var inputVector = context.ReadValue<Vector2>();
+        m_directionX = inputVector.x;
+    }
+
+    public void OnJump(InputAction.CallbackContext context)
+    { 
+        if (context.started)
+        {
+            m_desiredJump = true;
+        }
+    }
+
     private void Update()
     {
-        m_directionX = Input.GetAxisRaw("Horizontal");
-        if (!m_desiredJump)
-        {
-            m_desiredJump = Input.GetButtonDown("Jump");
-        }
+        Debug.Log($"x input = {m_directionX}");
 
         m_rigidBody.gravityScale = (m_gravityMultiplier * (-2 * m_jumpHeight) / (m_jumpTimeToApex * m_jumpTimeToApex)) / Physics2D.gravity.y;
 
         m_onGround = m_ground.GetOnGround();
-        m_desiredVelocityX = m_directionX * m_speedX;
-
+        m_desiredVelocityX = (m_directionX == 0 ? 0 : Mathf.Sign(m_directionX)) * m_speedX;
     }
 
     private void FixedUpdate()
