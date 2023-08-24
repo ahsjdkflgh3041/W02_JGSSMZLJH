@@ -13,16 +13,22 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float m_jumpHeight;
     [SerializeField] private float m_jumpTimeToApex;
     [SerializeField] private float m_gravityMultiplier = 1;
+    [SerializeField] private float m_dashCriterionTime = 0.2f;
 
     private Vector2 m_velocity;
     private float m_directionX;
     private bool m_desiredJump;
+    private bool m_desiredDash;
     private float m_desiredVelocityX;
+    private float m_dashInputTime;
+    private bool m_dashInput;
 
     private bool m_isDashing;
     private bool m_isJumping;
     private bool m_canJumpAgain = false;
     private bool m_onGround;
+
+   
 
     void Awake()
     {
@@ -37,17 +43,39 @@ public class PlayerController : MonoBehaviour
     }
 
     public void OnJump(InputAction.CallbackContext context)
-    { 
+    {
         if (context.started)
         {
             m_desiredJump = true;
         }
     }
 
+    public void OnDash(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            Debug.Log("Push Dash");
+            m_dashInput = true;
+            m_dashInputTime = (float)context.startTime;
+        }
+
+        if (context.canceled)
+        {
+            if (Time.realtimeSinceStartup < m_dashInputTime + m_dashCriterionTime)
+            {
+                m_desiredDash = true;
+            }
+            else
+            {
+                Debug.Log($"dash input too long : {Time.realtimeSinceStartup - m_dashInputTime}");
+            }
+
+            m_dashInput = false;
+        }
+    }
+
     private void Update()
     {
-        Debug.Log($"x input = {m_directionX}");
-
         m_rigidBody.gravityScale = (m_gravityMultiplier * (-2 * m_jumpHeight) / (m_jumpTimeToApex * m_jumpTimeToApex)) / Physics2D.gravity.y;
 
         m_onGround = m_ground.GetOnGround();
@@ -62,6 +90,10 @@ public class PlayerController : MonoBehaviour
         if (m_desiredJump)
         {
             DoAJump();
+        }
+        if (m_desiredDash)
+        {
+            DoADash();
         }
 
         m_rigidBody.velocity = m_velocity;
@@ -94,5 +126,12 @@ public class PlayerController : MonoBehaviour
         }
 
         m_desiredJump = false;
+    }
+
+    private void DoADash()
+    {
+        Debug.Log("Dash!");
+        m_isDashing = true;
+        m_desiredDash = false;
     }
 }
