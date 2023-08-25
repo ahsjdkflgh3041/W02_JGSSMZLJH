@@ -46,6 +46,7 @@ public class MonsterBase : MonoBehaviour, IDamagable
 
     protected bool m_isAttacking;
     protected bool m_isHit;
+    protected bool m_isDead;
 
     #endregion
 
@@ -53,6 +54,9 @@ public class MonsterBase : MonoBehaviour, IDamagable
 
     public void TakeDamage(int damage)
     {
+        if (Health <= 0)
+            return;
+
         Health -= damage;
         SetState(State.Hit);
     }
@@ -76,9 +80,14 @@ public class MonsterBase : MonoBehaviour, IDamagable
         m_dieColor = new Color(m_originColor.r, m_originColor.g, m_originColor.b, 60 / 255f);
 
         m_state = State.Idle;
-        InvokeRepeating(nameof(CheckTarget), 0f, m_checkCoolTime);
+        InvokeRepeating(nameof(DetectTarget), 0f, m_checkCoolTime);
         StartCoroutine(nameof(StateMachine));
     }
+
+    //protected void LateUpdate()
+    //{
+    //   
+    //}
 
     #region State Define
 
@@ -206,18 +215,20 @@ public class MonsterBase : MonoBehaviour, IDamagable
 
     #endregion
 
-    protected void CheckTarget()
+    protected void DetectTarget()
     {
-        Collider2D[] cols = Physics2D.OverlapCircleAll(transform.position, m_detectRange);
-        foreach (Collider2D col in cols)
+        Collider2D[] cols = Physics2D.OverlapCircleAll(transform.position, m_detectRange, LayerMask.GetMask("Player"));
+
+        if (cols != null)
         {
-            if (col.gameObject.CompareTag("Player"))
+            foreach (Collider2D col in cols)
             {
                 m_target = col.transform;
                 ChangeState(State.Chase);
                 return;
             }
         }
+
         m_target = null;
         ChangeState(State.Idle);
     }

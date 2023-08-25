@@ -9,6 +9,8 @@ public class Bullet : MonoBehaviour
 
     [SerializeField] float m_bulletSpeed;
 
+    public int Health { get; private set; }
+
     private void Update()
     { 
         transform.position += m_bulletDir * m_bulletSpeed * Time.deltaTime;
@@ -18,4 +20,12 @@ public class Bullet : MonoBehaviour
     {
         Destroy(gameObject);
     }
+
+    //private void OnCollisionEnter2D(Collision2D collision)
+    //{
+    //    if (collision.gameObject.CompareTag("Player"))
+    //    {
+    //        collision.gameObject.GetComponent<>();
+    //    }
+    //}
 }
