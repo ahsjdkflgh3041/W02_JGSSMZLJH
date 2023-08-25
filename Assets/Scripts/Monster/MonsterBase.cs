@@ -24,6 +24,7 @@ public class MonsterBase : MonoBehaviour, IDamagable
     protected SpriteRenderer m_renderer;
     protected SpriteRenderer[] m_renderers;
     protected Collider2D m_collider;
+    protected MonsterGround m_ground;
 
     protected Color m_originColor;
     protected Color m_attackColor;
@@ -31,7 +32,7 @@ public class MonsterBase : MonoBehaviour, IDamagable
     protected Color m_dieColor;
 
     protected Transform m_target;
-    protected Vector2 m_moveDir = Vector2.one;
+    protected Vector3 m_moveDir = Vector3.one;
 
     [Header("Status")]
     [SerializeField] protected int m_hp;
@@ -70,6 +71,7 @@ public class MonsterBase : MonoBehaviour, IDamagable
         m_renderer = GetComponent<SpriteRenderer>();
         m_renderers = GetComponentsInChildren<SpriteRenderer>();
         m_collider = GetComponent<Collider2D>();
+        m_ground = GetComponent<MonsterGround>();
     }
 
     protected void Start()
@@ -84,10 +86,11 @@ public class MonsterBase : MonoBehaviour, IDamagable
         StartCoroutine(nameof(StateMachine));
     }
 
-    //protected void LateUpdate()
-    //{
-    //   
-    //}
+    protected void LateUpdate()
+    {
+        if (m_ground.GetOnGround() != null)
+            Turn();
+    }
 
     #region State Define
 
@@ -122,13 +125,13 @@ public class MonsterBase : MonoBehaviour, IDamagable
 
     protected IEnumerator Idle()
     {
-        Vector3 randVec = new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), 0);
+        m_moveDir = new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), 0);
 
         for (float i = 0; i < m_checkCoolTime; i += Time.deltaTime)
         {
-            transform.position += randVec * m_moveSpeed * Time.deltaTime;
-            m_moveDir.x = (randVec.normalized.x < 0 ? -1 : 1);
-            transform.localScale = m_moveDir;
+            transform.position += m_moveDir * m_moveSpeed * Time.deltaTime;
+            this.m_moveDir.x = (m_moveDir.normalized.x < 0 ? -1 : 1);
+            transform.localScale = new Vector3(this.m_moveDir.x, 1, 1);
             yield return new WaitForEndOfFrame();
         }
     }
@@ -147,18 +150,18 @@ public class MonsterBase : MonoBehaviour, IDamagable
             yield break;
         }
 
-        Vector3 chaseDir = m_target.transform.position - transform.position;
+        m_moveDir = m_target.transform.position - transform.position;
 
-        if (chaseDir.magnitude > 0.01f)
+        if (m_moveDir.magnitude > 0.01f)
         {
-            transform.position += chaseDir.normalized * m_moveSpeed * Time.deltaTime;
-            m_moveDir.x = (chaseDir.normalized.x < 0 ? -1 : 1);
-            transform.localScale = m_moveDir;
+            transform.position += m_moveDir.normalized * m_moveSpeed * Time.deltaTime;
+            m_moveDir.x = (m_moveDir.normalized.x < 0 ? -1 : 1);
+            transform.localScale = new Vector3(this.m_moveDir.x, 1, 1);
 
             yield return new WaitForEndOfFrame();
         }
 
-        if (chaseDir.magnitude < m_attackRange)
+        if (m_moveDir.magnitude < m_attackRange)
             ChangeState(State.Attack);
     }
 
@@ -233,6 +236,11 @@ public class MonsterBase : MonoBehaviour, IDamagable
         ChangeState(State.Idle);
     }
 
+    protected void Turn()
+    {
+        m_moveDir = new Vector3(m_moveDir.x * -1, m_moveDir.y * -1, m_moveDir.z);
+    }
+
     protected void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.green;
@@ -240,15 +248,6 @@ public class MonsterBase : MonoBehaviour, IDamagable
 
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, m_attackRange);
-    }
-
-    protected void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Player") && m_isHit == false)
-        {
-            // 나중에 player가 호출
-            TakeDamage(1);
-        }
     }
 
     #endregion

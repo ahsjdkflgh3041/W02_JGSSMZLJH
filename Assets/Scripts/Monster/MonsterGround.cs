@@ -4,15 +4,23 @@ using UnityEngine;
 
 public class MonsterGround : MonoBehaviour
 {
-    #region PublicVariables
-    #endregion
+    Collider2D m_onGround;
 
-    #region PrivateVariables
-    #endregion
+    [Header("Ground Collider Settings")]
+    [SerializeField][Tooltip("Radius of the ground-checking collider")] private float m_groundRadius = 0.95f;
+    [SerializeField][Tooltip("Which layers are read as the ground")] private LayerMask m_groundLayer;
 
-    #region PublicMethod
-    #endregion
+    private void Update()
+    {
+        m_onGround = Physics2D.OverlapCircle(transform.position, m_groundRadius, m_groundLayer);
+    }
 
-    #region PrivateMethod
-    #endregion
+    private void OnDrawGizmosSelected()
+    {
+        if (m_onGround != null) { Gizmos.color = Color.green; } else { Gizmos.color = Color.red; }
+        Gizmos.DrawWireSphere(transform.position, m_groundRadius);
+    }
+
+    public Collider2D GetOnGround() { return m_onGround; }
+
 }

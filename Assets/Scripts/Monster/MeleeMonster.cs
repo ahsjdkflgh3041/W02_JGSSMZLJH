@@ -2,17 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MeleeMonster : MonoBehaviour
+public class MeleeMonster : MonsterBase
 {
-    #region PublicVariables
-    #endregion
 
-    #region PrivateVariables
-    #endregion
-
-    #region PublicMethod
-    #endregion
-
-    #region PrivateMethod
-    #endregion
 }
