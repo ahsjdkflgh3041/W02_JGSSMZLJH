@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     const string k_keyboardAndMouseString = "Keyboard&Mouse";
+    const float k_almosZero = 0.001f;
 
     Rigidbody2D m_rigidBody;
     PlayerGround m_ground;
@@ -18,10 +19,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private bool m_enableDoubleJump = true;
     [SerializeField] private float m_jumpHeight;
     [SerializeField] private float m_jumpTimeToApex;
+    [SerializeField] private float m_jumpCutoffGravity;
+    [SerializeField] private float m_downwardGravity = 1;
     [SerializeField] private float m_defaultGravity = 1;
     [Header("Dash")]
     [SerializeField] private float m_dashDistance;
     [SerializeField] private float m_dashPreDelay;
+    [SerializeField] private float m_dashGravity;
     //[SerializeField] private float m_dashTime;
     [SerializeField] private float m_dashPostDelay;
     [Header("Input")]
@@ -39,17 +43,17 @@ public class PlayerController : MonoBehaviour
     private Vector2 m_dashStartPosition;
     private Vector2 m_dashTargetPosition;
     private float m_dashStartTime;
+    private bool m_jumpInput;
     private float m_jumpBufferCounter;
-    private float m_dashInputTime;
     private bool m_dashInput;
+    private float m_dashInputTime;
 
     private bool m_isDashing;
     private bool m_hasPerformedDash;
     private bool m_isJumping;
     private bool m_canJumpAgain = false;
+    private bool m_canDash = true;
     private bool m_onGround;
-
-   
 
     void Awake()
     {
@@ -72,6 +76,11 @@ public class PlayerController : MonoBehaviour
         if (context.started)
         {
             m_desiredJump = true;
+            m_jumpInput = true;
+        }
+        if (context.canceled)
+        {
+            m_jumpInput = false;
         }
     }
 
@@ -109,8 +118,6 @@ public class PlayerController : MonoBehaviour
                 m_dashDirection = context.ReadValue<Vector2>().normalized;
             }
         }
-        Debug.Log($"Gamepad Direction = {m_dashDirection}");
-
     }
 
     private void Update()
@@ -119,10 +126,9 @@ public class PlayerController : MonoBehaviour
         {
             var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             m_dashDirection = (mousePosition - transform.position).normalized;
-            Debug.Log($"Mouse Direction = {m_dashDirection}");
         }
 
-        m_rigidBody.gravityScale = (m_gravityMultiplier * (-2 * m_jumpHeight) / (m_jumpTimeToApex * m_jumpTimeToApex)) / Physics2D.gravity.y;
+        m_rigidBody.gravityScale = (m_gravityMultiplier * -2 * m_jumpHeight) / (m_jumpTimeToApex * m_jumpTimeToApex * Physics2D.gravity.y);
 
         if (m_jumpBuffer > 0)
         {
@@ -153,22 +159,18 @@ public class PlayerController : MonoBehaviour
             m_velocity = m_rigidBody.velocity;
             m_velocity.x = m_desiredVelocityX;
 
-            if (m_desiredDash)
-            {
-                DoADash();
-            }
-            else if (m_desiredJump)
+            if (m_desiredJump)
             {
                 DoAJump();
             }
         }
 
-        m_rigidBody.velocity = m_velocity;
-
-        if (m_onGround)
+        if (m_canDash && m_desiredDash)
         {
-            m_isJumping = false;
+            DoADash();
         }
+
+        m_rigidBody.velocity = m_velocity;
 
         SetGravity();
     }
@@ -176,11 +178,10 @@ public class PlayerController : MonoBehaviour
     private void PerformDash()
     {
         float dashTime = Time.time - m_dashStartTime;
-        m_velocity = Vector2.zero;
 
         if (dashTime <= m_dashPreDelay)
         {
-
+            m_velocity = Vector2.zero;
         }
         //else if (dashTime <= m_dashPreDelay + m_dashTime)
         //{
@@ -194,6 +195,7 @@ public class PlayerController : MonoBehaviour
             if (!m_hasPerformedDash)
             {
                 m_hasPerformedDash = true;
+                m_canDash = true;
                 transform.Translate(m_dashDirection.normalized * m_dashDistance, Space.Self);
 
                 m_attack.Attack(m_dashStartPosition, transform.position);
@@ -235,6 +237,7 @@ public class PlayerController : MonoBehaviour
     {
         Debug.Log("Dash!");
         m_isDashing = true;
+        m_canDash = false;
         m_desiredDash = false;
         m_hasPerformedDash = false;
 
@@ -244,7 +247,60 @@ public class PlayerController : MonoBehaviour
     }
 
     private void SetGravity()
-    {
-        m_gravityMultiplier = m_isDashing ? 0 : m_defaultGravity;
+    { 
+        if (m_isDashing)
+        {
+            m_gravityMultiplier = m_dashGravity;
+            return;
+        }
+
+        if (m_rigidBody.velocity.y > k_almosZero)
+        {
+            if (m_onGround)
+            {
+                m_gravityMultiplier = m_defaultGravity;
+            }
+            else
+            {
+                if (m_isJumping)
+                {
+                    if (m_jumpInput)
+                    {
+                        m_gravityMultiplier = m_defaultGravity;
+                    }
+                    else
+                    {
+                        m_gravityMultiplier = m_jumpCutoffGravity;
+
+                    }
+                }
+                else
+                {
+                    m_gravityMultiplier = m_jumpCutoffGravity;
+                }
+            }
+        }
+        else if (m_rigidBody.velocity.y < -k_almosZero)
+        {
+            if (m_onGround)
+            {
+                m_gravityMultiplier = m_defaultGravity;
+            }
+            else
+            {
+                m_gravityMultiplier = m_downwardGravity;
+            }
+
+        }
+        else
+        {
+            if (m_onGround)
+            {
+                m_isJumping = false;
+            }
+
+            m_gravityMultiplier = m_defaultGravity;
+        }
+        Debug.Log($"isJumping = {m_isJumping}, jumpInput = {m_jumpInput} : Multiplier = {m_gravityMultiplier}");
     }
 }
