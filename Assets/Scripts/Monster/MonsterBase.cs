@@ -40,13 +40,16 @@ public class MonsterBase : MonoBehaviour, IDamagable
     [SerializeField] protected float m_detectRange;
     [SerializeField] protected float m_attackRange;
 
-    [Header("Cool Time")]
-    protected float m_checkCoolTime = 0.5f;
-    protected float m_hitCoolTime = 0.01f;
-    [SerializeField] protected float m_attackCoolTime = 1f;
+    [Header("Time")]
+    protected float m_detectCoolTime = 0.5f;
+    protected float m_hitCoolTime = 0.5f;
+    [SerializeField] protected float m_attackingTime = 1f;
+    [SerializeField] protected float m_attackCoolTime;
+    protected float m_attackCoolTimeCounter;
 
     protected bool m_isAttacking;
-    protected bool m_isHit;
+    protected bool m_canAttack = true;
+    protected bool m_isHitting;
     protected bool m_isDead;
 
     #endregion
@@ -59,7 +62,7 @@ public class MonsterBase : MonoBehaviour, IDamagable
             return;
 
         Health -= damage;
-        SetState(State.Hit);
+        ForceChangeState(State.Hit);
     }
 
     #endregion
@@ -74,7 +77,7 @@ public class MonsterBase : MonoBehaviour, IDamagable
         m_ground = GetComponent<MonsterGround>();
     }
 
-    protected void Start()
+    protected virtual void Start()
     {
         m_originColor = m_renderer.color;
         m_attackColor = new Color(255 / 255f, 122 / 255f, 0 / 255f, 255 / 255f);
@@ -82,8 +85,12 @@ public class MonsterBase : MonoBehaviour, IDamagable
         m_dieColor = new Color(m_originColor.r, m_originColor.g, m_originColor.b, 60 / 255f);
 
         m_state = State.Idle;
-        InvokeRepeating(nameof(DetectTarget), 0f, m_checkCoolTime);
+        InvokeRepeating(nameof(DetectTarget), 0f, m_detectCoolTime);
         StartCoroutine(nameof(StateMachine));
+    }
+
+    protected virtual void Update()
+    {
     }
 
     protected void LateUpdate()
@@ -107,16 +114,20 @@ public class MonsterBase : MonoBehaviour, IDamagable
         m_state = _state;
     }
 
-    protected void SetState(State _state)
+    protected void ForceChangeState(State _state)
     {
         StopAllCoroutines();
-
-        m_isAttacking = false;
-        m_isHit = false;
-        Utility.ChangeColor(m_renderer, m_originColor);
-
+        Init();
         ChangeState(_state);
         StartCoroutine(nameof(StateMachine));
+    }
+
+    protected virtual void Init()
+    {
+        m_isAttacking = false;
+        m_isHitting = false;
+        Utility.ChangeColor(m_renderer, m_originColor);
+        StartCoroutine(nameof(WaitAttackCoolTime));
     }
 
     #endregion
@@ -127,7 +138,7 @@ public class MonsterBase : MonoBehaviour, IDamagable
     {
         m_moveDir = new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), 0);
 
-        for (float i = 0; i < m_checkCoolTime; i += Time.deltaTime)
+        for (float i = 0; i < m_detectCoolTime; i += Time.deltaTime)
         {
             transform.position += m_moveDir * m_moveSpeed * Time.deltaTime;
             this.m_moveDir.x = (m_moveDir.normalized.x < 0 ? -1 : 1);
@@ -138,12 +149,6 @@ public class MonsterBase : MonoBehaviour, IDamagable
 
     protected IEnumerator Chase()
     {
-        if (m_isHit == true)
-        {
-            ChangeState(State.Hit);
-            yield break;
-        }
-
         if (m_target == null)
         {
             ChangeState(State.Idle);
@@ -152,7 +157,7 @@ public class MonsterBase : MonoBehaviour, IDamagable
 
         m_moveDir = m_target.transform.position - transform.position;
 
-        if (m_moveDir.magnitude > 0.01f)
+        if (m_moveDir.magnitude > 0.5f)
         {
             transform.position += m_moveDir.normalized * m_moveSpeed * Time.deltaTime;
             m_moveDir.x = (m_moveDir.normalized.x < 0 ? -1 : 1);
@@ -167,44 +172,57 @@ public class MonsterBase : MonoBehaviour, IDamagable
 
     protected virtual IEnumerator Attack()
     {
-        if (m_isAttacking == true)
+        if (m_canAttack == false)
         {
             ChangeState(State.Chase);
             yield break;
         }
 
-        if (m_isHit == true)
+        if (m_isHitting == true)
         {
             ChangeState(State.Hit);
             yield break;
         }
 
         m_isAttacking = true;
-        m_originColor = m_renderer.color;
+        m_canAttack = false;
+        StartCoroutine(nameof(WaitAttackCoolTime));
         Utility.ChangeColor(m_renderer, m_attackColor);
 
-        yield return new WaitForSeconds(m_attackCoolTime);
-        Utility.ChangeColor(m_renderer, m_originColor);
+        yield return new WaitForSeconds(m_attackingTime);
         m_isAttacking = false;
+        Utility.ChangeColor(m_renderer, m_originColor);
+
         ChangeState(State.Chase);
+    }
+
+    protected IEnumerator WaitAttackCoolTime()
+    {
+        if (m_canAttack == true) yield break;
+            
+        while (m_attackCoolTimeCounter < m_attackCoolTime)
+        {
+            m_attackCoolTimeCounter += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+
+        m_attackCoolTimeCounter = 0;
+        m_canAttack = true;
     }
 
     protected IEnumerator Hit()
     {
-        m_isHit = true;
-
-        m_originColor = m_renderer.color;
+        m_isHitting = true;
         Utility.ChangeColor(m_renderer, m_hitColor);
 
         yield return new WaitForSeconds(m_hitCoolTime);
         Utility.ChangeColor(m_renderer, m_originColor);
-
-        m_isHit = false;
+        m_isHitting = false;
 
         if (Health > 0)
             ChangeState(State.Chase);
         else
-            SetState(State.Die);
+            ForceChangeState(State.Die);
     }
 
     protected IEnumerator Die()
@@ -231,9 +249,11 @@ public class MonsterBase : MonoBehaviour, IDamagable
                 return;
             }
         }
-
-        m_target = null;
-        ChangeState(State.Idle);
+        else
+        {
+            m_target = null;
+            ChangeState(State.Idle);
+        }
     }
 
     protected void Turn()
