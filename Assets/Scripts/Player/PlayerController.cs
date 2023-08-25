@@ -5,9 +5,12 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    const string k_keyboardAndMouseString = "Keyboard&Mouse";
+
     Rigidbody2D m_rigidBody;
     PlayerGround m_ground;
     PlayerAttack m_attack;
+    PlayerInput m_input;
 
     [Header("Move")]
     [SerializeField] private float m_speedX;
@@ -53,6 +56,7 @@ public class PlayerController : MonoBehaviour
         m_rigidBody = GetComponent<Rigidbody2D>();
         m_ground = GetComponent<PlayerGround>();
         m_attack = GetComponent<PlayerAttack>();
+        m_input = GetComponent<PlayerInput>();
 
         m_gravityMultiplier = m_defaultGravity;
     }
@@ -95,8 +99,29 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void OnDashDirection(InputAction.CallbackContext context)
+    {
+        if (!m_input.currentControlScheme.Equals(k_keyboardAndMouseString))
+        {
+            var inputVector = context.ReadValue<Vector2>();
+            if (inputVector != Vector2.zero)
+            {
+                m_dashDirection = context.ReadValue<Vector2>().normalized;
+            }
+        }
+        Debug.Log($"Gamepad Direction = {m_dashDirection}");
+
+    }
+
     private void Update()
     {
+        if (m_input.currentControlScheme.Equals(k_keyboardAndMouseString))
+        {
+            var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            m_dashDirection = (mousePosition - transform.position).normalized;
+            Debug.Log($"Mouse Direction = {m_dashDirection}");
+        }
+
         m_rigidBody.gravityScale = (m_gravityMultiplier * (-2 * m_jumpHeight) / (m_jumpTimeToApex * m_jumpTimeToApex)) / Physics2D.gravity.y;
 
         if (m_jumpBuffer > 0)
