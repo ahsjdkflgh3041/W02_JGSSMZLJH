@@ -11,26 +11,25 @@ public class MonsterBase : MonoBehaviour
     {
         Idle, Chase, Attack, Hit, Die,
     }
-    [SerializeField] State m_state;
+    [SerializeField] protected State m_state;
 
     SpriteRenderer[] m_renderer;
 
-    Transform m_target;
-    Vector2 m_moveDir = Vector2.one;
+    protected Transform m_target;
+    protected Vector2 m_moveDir = Vector2.one;
 
     [Header("Status")]
-    [SerializeField] int m_hp;
-    [SerializeField] float m_moveSpeed;
-    [SerializeField] float m_detectRange;
-    [SerializeField] float m_attackRange;
+    [SerializeField] protected int m_hp;
+    [SerializeField] protected float m_moveSpeed;
+    [SerializeField] protected float m_detectRange;
+    [SerializeField] protected float m_attackRange;
 
-    float m_idleTime = 2f;
-    float m_attackCoolTime = 2f;
+    protected float m_idleTime = 2f;
 
-    bool m_canAttack;
+    [SerializeField] protected bool m_isAttacking;
 
     // 수정필요
-    float m_attackTime = 1;
+    protected float m_attackTime = 1;
 
 
     private void Start()
@@ -89,13 +88,20 @@ public class MonsterBase : MonoBehaviour
             ChangeState(State.Attack);
     }
 
-    IEnumerator Attack()
+    protected virtual IEnumerator Attack()
     {
+        if (m_isAttacking == true)
+        {
+            ChangeState(State.Chase);
+            yield break;
+        }
+
+        m_isAttacking = true;
         Util.ChangeColor(transform, Color.red);
 
         yield return new WaitForSeconds(m_attackTime);
         Util.ChangeColor(transform, Color.white);
-
+        m_isAttacking = false;
         ChangeState(State.Chase);
     }
 
