@@ -381,11 +381,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_groundLength: 0.525
   m_groundOffset: {x: 0.2, y: 0, z: 0}
-  m_wallLength: 0.275
-  m_wallOffset: {x: 0, y: 0.44, z: 0}
   m_groundLayer:
     serializedVersion: 2
     m_Bits: 8
+  m_wallLength: 0.275
+  m_wallOffset: {x: 0, y: 0.44, z: 0}
   m_wallLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -505,12 +505,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9b7f0e1c1ef2b54ba732a17ddba10a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_enableDoubleJump: 1
   m_speedX: 5
+  m_enableDoubleJump: 1
   m_jumpHeight: 2
   m_jumpTimeToApex: 1
-  m_gravityMultiplier: 5
+  m_defaultGravity: 5
+  m_dashDistance: 3
+  m_dashPreDelay: 0.05
+  m_dashTime: 0.1
+  m_dashPostDelay: 0.05
+  m_jumpBuffer: 0.2
   m_dashCriterionTime: 0.2
+  m_dashDirection: {x: 1, y: 1}
 --- !u!114 &1328619771
 MonoBehaviour:
   m_ObjectHideFlags: 0
