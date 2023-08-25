@@ -17,11 +17,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float m_speedX;
     [Header("Jump")]
     [SerializeField] private bool m_enableDoubleJump = true;
+    [SerializeField] private bool m_enableJumpCutoff = true;
     [SerializeField] private float m_jumpHeight;
     [SerializeField] private float m_jumpTimeToApex;
     [SerializeField] private float m_jumpCutoffGravity;
     [SerializeField] private float m_downwardGravity = 1;
     [SerializeField] private float m_defaultGravity = 1;
+    [SerializeField] private float m_maxFallSpeed = 100f;
     [Header("Dash")]
     [SerializeField] private float m_dashDistance;
     [SerializeField] private float m_dashPreDelay;
@@ -52,8 +54,9 @@ public class PlayerController : MonoBehaviour
     private bool m_hasPerformedDash;
     private bool m_isJumping;
     private bool m_canJumpAgain = false;
-    private bool m_canDash = true;
+    private bool m_canJumpOrDash = true;
     private bool m_onGround;
+    private bool m_hasJumpedThisFrame;
 
     void Awake()
     {
@@ -88,7 +91,7 @@ public class PlayerController : MonoBehaviour
     {
         if (context.started)
         {
-            Debug.Log("Push Dash");
+            //Debug.Log("Push Dash");
             m_dashInput = true;
             m_dashInputTime = (float)context.startTime;
         }
@@ -98,10 +101,10 @@ public class PlayerController : MonoBehaviour
             if (Time.realtimeSinceStartup < m_dashInputTime + m_dashCriterionTime)
             {
                 m_desiredDash = true;
-            }
+            }  
             else
             {
-                Debug.Log($"dash input too long : {Time.realtimeSinceStartup - m_dashInputTime}");
+                //Debug.Log($"dash input too long : {Time.realtimeSinceStartup - m_dashInputTime}");
             }
 
             m_dashInput = false;
@@ -150,27 +153,30 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        m_hasJumpedThisFrame = false;
+
+        m_velocity = m_rigidBody.velocity;
+        m_velocity.x = m_desiredVelocityX;
+
         if (m_isDashing)
         {
             PerformDash();
         }
-        else
-        {
-            m_velocity = m_rigidBody.velocity;
-            m_velocity.x = m_desiredVelocityX;
 
-            if (m_desiredJump)
+        if (m_canJumpOrDash)
+        {
+            if (m_desiredDash)
+            {
+                DoADash();
+            }
+            else if (m_desiredJump)
             {
                 DoAJump();
+                m_hasJumpedThisFrame = true;
             }
         }
 
-        if (m_canDash && m_desiredDash)
-        {
-            DoADash();
-        }
-
-        m_rigidBody.velocity = m_velocity;
+        m_rigidBody.velocity = new Vector3(m_velocity.x, Mathf.Clamp(m_velocity.y, -m_maxFallSpeed, float.MaxValue));
 
         SetGravity();
     }
@@ -195,16 +201,21 @@ public class PlayerController : MonoBehaviour
             if (!m_hasPerformedDash)
             {
                 m_hasPerformedDash = true;
-                m_canDash = true;
+                m_canJumpOrDash = true;
                 transform.Translate(m_dashDirection.normalized * m_dashDistance, Space.Self);
 
                 m_attack.Attack(m_dashStartPosition, transform.position);
+            }
+
+            if (!m_isJumping)
+            {
+                m_velocity = Vector2.zero;
             }
         }
         else
         {
             var displacement = (Vector2)transform.position - m_dashStartPosition;
-            Debug.Log($"Dash Displacement : {displacement} = {displacement.magnitude}");
+            //Debug.Log($"Dash Displacement : {displacement} = {displacement.magnitude}");
             m_isDashing = false;
         }
     }
@@ -214,9 +225,9 @@ public class PlayerController : MonoBehaviour
         {
             m_desiredJump = false;
             m_jumpBufferCounter = 0;
-            m_canJumpAgain = m_canJumpAgain == false;
+            m_canJumpAgain = m_enableDoubleJump && m_canJumpAgain == false;
 
-            float jumpSpeed = Mathf.Sqrt(-2f * Physics2D.gravity.y * m_rigidBody.gravityScale * m_jumpHeight);
+            float jumpSpeed = Mathf.Sqrt(-2f * Physics2D.gravity.y * m_rigidBody.gravityScale * m_jumpHeight / m_gravityMultiplier);
 
             if (m_velocity.y > 0f)
             {
@@ -228,6 +239,7 @@ public class PlayerController : MonoBehaviour
             }
 
             m_velocity.y += jumpSpeed;
+            Debug.Log($"jump speed = {jumpSpeed}, velocity y = {m_velocity.y}");
             m_isJumping = true;
         }
 
@@ -235,9 +247,10 @@ public class PlayerController : MonoBehaviour
 
     private void DoADash()
     {
-        Debug.Log("Dash!");
+        //Debug.Log("Dash!");
         m_isDashing = true;
-        m_canDash = false;
+        m_isJumping = false;
+        m_canJumpOrDash = false;
         m_desiredDash = false;
         m_hasPerformedDash = false;
 
@@ -248,6 +261,8 @@ public class PlayerController : MonoBehaviour
 
     private void SetGravity()
     { 
+        if (m_hasJumpedThisFrame) { return; }
+
         if (m_isDashing)
         {
             m_gravityMultiplier = m_dashGravity;
@@ -262,21 +277,20 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                if (m_isJumping)
+                if (m_enableJumpCutoff)
                 {
-                    if (m_jumpInput)
+                    if (m_isJumping && m_jumpInput)
                     {
                         m_gravityMultiplier = m_defaultGravity;
                     }
                     else
                     {
                         m_gravityMultiplier = m_jumpCutoffGravity;
-
                     }
                 }
                 else
                 {
-                    m_gravityMultiplier = m_jumpCutoffGravity;
+                    m_gravityMultiplier = m_defaultGravity;
                 }
             }
         }
@@ -301,6 +315,7 @@ public class PlayerController : MonoBehaviour
 
             m_gravityMultiplier = m_defaultGravity;
         }
-        Debug.Log($"isJumping = {m_isJumping}, jumpInput = {m_jumpInput} : Multiplier = {m_gravityMultiplier}");
+
+        //Debug.Log($"isJumping = {m_isJumping}, jumpInput = {m_jumpInput} : Multiplier = {m_gravityMultiplier}");
     }
 }
