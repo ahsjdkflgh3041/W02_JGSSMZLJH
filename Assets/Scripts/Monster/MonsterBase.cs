@@ -5,8 +5,12 @@ using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
-public class MonsterBase : MonoBehaviour
+public class MonsterBase : MonoBehaviour, IDamagable
 {
+    public int Health { get { return m_hp; } set { m_hp = value; } }
+    public int Damage { get; set; }
+
+
     public enum State
     {
         Idle, Chase, Attack, Hit, Die,
@@ -15,10 +19,12 @@ public class MonsterBase : MonoBehaviour
 
     protected SpriteRenderer m_renderer;
     protected SpriteRenderer[] m_renderers;
+    protected Collider2D m_collider;
 
     protected Color m_originColor;
     protected Color m_attackColor;
     protected Color m_hitColor;
+    protected Color m_dieColor;
 
     protected Transform m_target;
     protected Vector2 m_moveDir = Vector2.one;
@@ -33,7 +39,7 @@ public class MonsterBase : MonoBehaviour
     protected float m_hitTime = 0.5f;
 
     protected bool m_isAttacking;
-    [SerializeField]  protected bool m_isHit;
+    protected bool m_isHit;
 
     // 수정필요
     protected float m_attackTime = 1f;
@@ -43,6 +49,7 @@ public class MonsterBase : MonoBehaviour
     {
         m_renderer = GetComponent<SpriteRenderer>();
         m_renderers = GetComponentsInChildren<SpriteRenderer>();
+        m_collider = GetComponent<Collider2D>();
     }
 
     private void Start()
@@ -50,20 +57,24 @@ public class MonsterBase : MonoBehaviour
         m_originColor = m_renderer.color;
         m_attackColor = new Color(255/255f, 122/255f, 0/255f, 255/255f);
         m_hitColor = Color.red;
+        m_dieColor = new Color(m_originColor.r, m_originColor.g, m_originColor.b, 60 / 255f);
 
 
         m_state = State.Idle;
         InvokeRepeating(nameof(CheckTarget), 0f, m_idleTime);
         StartCoroutine(nameof(StateMachine));
+
+
+        // temp
+        Damage = 1;
     }
 
     protected IEnumerator StateMachine()
     {
-        while (m_hp > 0)
+        do
         {
-            InitState();
             yield return StartCoroutine(m_state.ToString());
-        }
+        } while (Health > 0);
     }
 
     protected void ChangeState(State _state)
@@ -71,11 +82,16 @@ public class MonsterBase : MonoBehaviour
         m_state = _state;
     }
 
-    void InitState()
-    { 
+    void SetState(State _state)
+    {
+        StopAllCoroutines();
+
+        ChangeState(_state);
         m_isAttacking = false;
         m_isHit = false;
         Utility.ChangeColor(m_renderer, m_originColor);
+        
+        StartCoroutine(nameof(StateMachine));
     }
 
     protected IEnumerator Idle() 
@@ -147,6 +163,8 @@ public class MonsterBase : MonoBehaviour
     protected IEnumerator Hit()
     {
         m_isHit = true;
+        TakeDamage(Damage);
+
         m_originColor = m_renderer.color;
         Utility.ChangeColor(m_renderer, m_hitColor);
         
@@ -154,12 +172,20 @@ public class MonsterBase : MonoBehaviour
         Utility.ChangeColor(m_renderer, m_originColor);
 
         m_isHit = false;
-        ChangeState(State.Chase);
+
+        if (Health > 0)
+            ChangeState(State.Chase);
+        else
+            SetState(State.Die);
     }
 
     protected IEnumerator Die()
     {
-        yield return null;
+        Utility.ChangeColor(m_renderer, m_dieColor);
+        m_collider.isTrigger = true;
+
+        yield return new WaitForSeconds(3f);
+        Destroy(gameObject);
     }
 
     protected void CheckTarget()
@@ -180,14 +206,10 @@ public class MonsterBase : MonoBehaviour
 
     protected void OnCollisionEnter2D(Collision2D collision)
     {
-
-
         if (collision.gameObject.CompareTag("Player") && m_isHit == false)
         {
             // 나중에 player가 호출
-            StopAllCoroutines();
-            ChangeState(State.Hit);
-            StartCoroutine(nameof(StateMachine));
+            SetState(State.Hit);
         }    
     }
 
@@ -198,5 +220,10 @@ public class MonsterBase : MonoBehaviour
 
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, m_attackRange);
+    }
+
+    public void TakeDamage(int damage)
+    {
+        Health -= damage;
     }
 }

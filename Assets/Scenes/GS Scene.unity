@@ -235,7 +235,6 @@ MonoBehaviour:
   m_moveSpeed: 5
   m_detectRange: 5
   m_attackRange: 3
-  m_isHit: 0
 --- !u!1 &1886440932
 GameObject:
   m_ObjectHideFlags: 0
@@ -503,6 +502,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 643776161914554206, guid: 09b9a6361d0165148b96fddb711d8b8d, type: 3}
+      propertyPath: m_hp
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 643776161914554206, guid: 09b9a6361d0165148b96fddb711d8b8d, type: 3}
       propertyPath: m_hitColor.a
       value: 1
       objectReference: {fileID: 0}
@@ -528,6 +531,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 643776161914554206, guid: 09b9a6361d0165148b96fddb711d8b8d, type: 3}
       propertyPath: m_attackColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 643776161914554207, guid: 09b9a6361d0165148b96fddb711d8b8d, type: 3}
+      propertyPath: m_Color.a
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 643776161914554207, guid: 09b9a6361d0165148b96fddb711d8b8d, type: 3}
