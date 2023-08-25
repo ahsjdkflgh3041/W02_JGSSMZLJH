@@ -52,4 +52,9 @@ public class PlayerGround : MonoBehaviour
     public bool GetOnGround() { return m_onGround; }
     public bool GetOnLeftWall() { return m_onLeftWall; }
     public bool GetOnRightWall() { return m_onRightWall;  }
+
+    public LayerMask GetLayer() 
+    {
+        return m_groundLayer;  
+    }
 }

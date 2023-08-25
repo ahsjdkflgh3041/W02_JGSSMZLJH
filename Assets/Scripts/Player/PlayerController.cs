@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,6 +10,7 @@ public class PlayerController : MonoBehaviour
     const float k_almosZero = 0.001f;
 
     Rigidbody2D m_rigidBody;
+    BoxCollider2D m_boxCollider;
     PlayerGround m_ground;
     PlayerAttack m_attack;
     PlayerInput m_input;
@@ -61,6 +63,7 @@ public class PlayerController : MonoBehaviour
     void Awake()
     {
         m_rigidBody = GetComponent<Rigidbody2D>();
+        m_boxCollider = GetComponent<BoxCollider2D>();
         m_ground = GetComponent<PlayerGround>();
         m_attack = GetComponent<PlayerAttack>();
         m_input = GetComponent<PlayerInput>();
@@ -202,7 +205,11 @@ public class PlayerController : MonoBehaviour
             {
                 m_hasPerformedDash = true;
                 m_canJumpOrDash = true;
-                transform.Translate(m_dashDirection.normalized * m_dashDistance, Space.Self);
+
+                var distance = CalculateDashDistance();
+                Debug.Log($"final distance = {distance}");
+                Debug.DrawLine(transform.position, transform.position + (Vector3)m_dashDirection * distance, Color.red, 3);
+                transform.Translate(m_dashDirection.normalized * distance, Space.Self);
 
                 m_attack.Attack(m_dashStartPosition, transform.position);
             }
@@ -317,5 +324,36 @@ public class PlayerController : MonoBehaviour
         }
 
         //Debug.Log($"isJumping = {m_isJumping}, jumpInput = {m_jumpInput} : Multiplier = {m_gravityMultiplier}");
+    }
+
+    float CalculateDashDistance()
+    {
+        var horizontal = 0.95f * m_boxCollider.size.x * transform.lossyScale.x / 2;
+        var vertical = 0.95f * m_boxCollider.size.y * transform.lossyScale.y / 2;
+        var position = (Vector2)transform.position;
+        var dashVector = m_dashDirection * m_dashDistance;
+
+        var upRightPosition = position + Vector2.right * horizontal + Vector2.up * vertical;
+        var upLeftPosition = position + Vector2.left * horizontal + Vector2.up * vertical;
+        var downRightPosition = position + Vector2.right * horizontal + Vector2.down * vertical;
+        var downLeftPosition = position + Vector2.left * horizontal + Vector2.down * vertical;
+
+
+        var layer = m_ground.GetLayer();
+
+        var distances = new List<float>();
+        distances.Add(Mathf.Min(m_dashDistance, Vector2.Distance(upRightPosition, Physics2D.Linecast(upRightPosition, upRightPosition + dashVector, layer).point)));
+        distances.Add(Mathf.Min(m_dashDistance, Vector2.Distance(upLeftPosition, Physics2D.Linecast(upLeftPosition, upLeftPosition + dashVector, layer).point)));
+        distances.Add(Mathf.Min(m_dashDistance, Vector2.Distance(downRightPosition, Physics2D.Linecast(downRightPosition, downRightPosition + dashVector, layer).point)));
+        distances.Add(Mathf.Min(m_dashDistance, Vector2.Distance(downLeftPosition, Physics2D.Linecast(downLeftPosition, downLeftPosition + dashVector, layer).point)));
+
+        distances.ForEach(d => Debug.Log($"distance = {d}"));
+        return distances.Min();
+
+        //var start = (Vector2)transform.position;
+        //var end = start + m_dashDirection * m_dashDistance;
+        //var layer = m_ground.GetLayer();
+        //Debug.DrawLine(start, end, Color.red, 3);
+        //return Physics2D.Linecast(start, end, layer).distance;
     }
 }
