@@ -13,7 +13,8 @@ public class MonsterBase : MonoBehaviour
     }
     [SerializeField] protected State m_state;
 
-    SpriteRenderer[] m_renderer;
+    SpriteRenderer m_renderer;
+    SpriteRenderer[] m_renderers;
 
     protected Transform m_target;
     protected Vector2 m_moveDir = Vector2.one;
@@ -35,6 +36,9 @@ public class MonsterBase : MonoBehaviour
     private void Start()
     {
         m_state = State.Idle;
+
+        m_renderer = GetComponent<SpriteRenderer>();
+        m_renderers = GetComponentsInChildren<SpriteRenderer>();
 
         InvokeRepeating(nameof(CheckTarget), 0f, 0.3f);
         StartCoroutine(nameof(StateMachine));
@@ -97,10 +101,10 @@ public class MonsterBase : MonoBehaviour
         }
 
         m_isAttacking = true;
-        Util.ChangeColor(transform, Color.red);
 
+        Utility.ChangeColor(m_renderer, Color.red);
         yield return new WaitForSeconds(m_attackTime);
-        Util.ChangeColor(transform, Color.white);
+        Utility.ChangeColor(m_renderer, Color.white);
         m_isAttacking = false;
         ChangeState(State.Chase);
     }
