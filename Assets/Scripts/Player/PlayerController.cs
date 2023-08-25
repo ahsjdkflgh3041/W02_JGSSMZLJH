@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
 {
     Rigidbody2D m_rigidBody;
     PlayerGround m_ground;
+    PlayerAttack m_attack;
 
     [Header("Move")]
     [SerializeField] private float m_speedX;
@@ -51,6 +52,7 @@ public class PlayerController : MonoBehaviour
     {
         m_rigidBody = GetComponent<Rigidbody2D>();
         m_ground = GetComponent<PlayerGround>();
+        m_attack = GetComponent<PlayerAttack>();
 
         m_gravityMultiplier = m_defaultGravity;
     }
@@ -168,6 +170,8 @@ public class PlayerController : MonoBehaviour
             {
                 m_hasPerformedDash = true;
                 transform.Translate(m_dashDirection.normalized * m_dashDistance, Space.Self);
+
+                m_attack.Attack(m_dashStartPosition, transform.position);
             }
         }
         else
