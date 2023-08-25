@@ -11,13 +11,11 @@ public class PlayerGround : MonoBehaviour
     [Header("Ground Collider Settings")]
     [SerializeField] [Tooltip("Length of the ground-checking collider")] private float m_groundLength = 0.95f;
     [SerializeField] [Tooltip("Distance between the ground-checking colliders")] private Vector3 m_groundOffset;
+    [SerializeField] [Tooltip("Which layers are read as the ground")] private LayerMask m_groundLayer;
 
-    [Header("Left Collider Settings")]
+    [Header("Wall Collider Settings")]
     [SerializeField] [Tooltip("Length of the wall-checking collider")] private float m_wallLength = 0.475f;
     [SerializeField] [Tooltip("Distance between the left-checking colliders")] private Vector3 m_wallOffset;
-
-    [Header("Layer Masks")]
-    [SerializeField] [Tooltip("Which layers are read as the ground")] private LayerMask m_groundLayer;
     [SerializeField] [Tooltip("Which layers are read as the wall")] private LayerMask m_wallLayer;
 
     private void Update()

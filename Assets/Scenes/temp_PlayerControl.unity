@@ -359,6 +359,7 @@ GameObject:
   - component: {fileID: 1328619766}
   - component: {fileID: 1328619770}
   - component: {fileID: 1328619765}
+  - component: {fileID: 1328619771}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -380,11 +381,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_groundLength: 0.525
   m_groundOffset: {x: 0.2, y: 0, z: 0}
-  m_wallLength: 0.275
-  m_wallOffset: {x: 0, y: 0.44, z: 0}
   m_groundLayer:
     serializedVersion: 2
     m_Bits: 8
+  m_wallLength: 0.275
+  m_wallOffset: {x: 0, y: 0.44, z: 0}
   m_wallLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -504,11 +505,136 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9b7f0e1c1ef2b54ba732a17ddba10a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_enableDoubleJump: 1
   m_speedX: 5
+  m_enableDoubleJump: 1
   m_jumpHeight: 2
   m_jumpTimeToApex: 1
-  m_gravityMultiplier: 5
+  m_defaultGravity: 5
+  m_dashDistance: 3
+  m_dashPreDelay: 0.05
+  m_dashTime: 0.1
+  m_dashPostDelay: 0.05
+  m_jumpBuffer: 0.2
+  m_dashCriterionTime: 0.2
+  m_dashDirection: {x: 1, y: 1}
+--- !u!114 &1328619771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1328619764}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: 0fca6dcdc2bdba1439f46b503980acc6, type: 3}
+  m_NotificationBehavior: 2
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents:
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1328619770}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: OnMove
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: c7d0b5f1-437d-4b63-aad1-62155875ca59
+    m_ActionName: Player/Move[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1328619770}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: OnJump
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: fc23eb2d-ecfa-45c6-a6f6-c83376de1e20
+    m_ActionName: Player/Jump[/Keyboard/space]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: d5c7b03b-8b00-49f0-a3b0-8915a5b7c67b
+    m_ActionName: UI/Navigate[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: b86b0bbd-4f9e-402c-9c76-3cde36a26e3f
+    m_ActionName: UI/Submit[/Keyboard/enter]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 82442140-ce45-47ab-8feb-ffa829f0b806
+    m_ActionName: UI/Cancel[/Keyboard/escape]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: a05a46b2-3726-4ad8-a4fd-136491d80e82
+    m_ActionName: UI/Point[/Mouse/position]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: db87be12-1583-4114-8be6-80b6f55dd5b7
+    m_ActionName: UI/Click[/Mouse/leftButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 6acbc39f-0411-44e5-b20a-93c801216cfc
+    m_ActionName: UI/ScrollWheel[/Mouse/scroll]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 326d2b86-0472-4b9b-a862-5c623961253a
+    m_ActionName: UI/MiddleClick[/Mouse/middleButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 58846646-0751-4231-8250-99aa817aec56
+    m_ActionName: UI/RightClick[/Mouse/rightButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 61043bf0-5d79-4c07-98cb-30941ebea5d4
+    m_ActionName: UI/TrackedDevicePosition
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 3a0e911b-d0de-4e89-bade-98c837d43fc8
+    m_ActionName: UI/TrackedDeviceOrientation
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1328619770}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: OnDash
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 42ed296a-4c01-46ad-81a2-88ca0a7baa7b
+    m_ActionName: Player/Dash[/Mouse/leftButton]
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: Player
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
 --- !u!1 &1735439602
 GameObject:
   m_ObjectHideFlags: 0
