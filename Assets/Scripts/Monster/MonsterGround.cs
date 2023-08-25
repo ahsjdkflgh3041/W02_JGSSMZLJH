@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MonsterGround : MonoBehaviour
 {
-    Collider2D m_onGround;
+    bool m_onGround;
 
     [Header("Ground Collider Settings")]
     [SerializeField][Tooltip("Radius of the ground-checking collider")] private float m_groundRadius = 0.95f;
@@ -17,10 +17,10 @@ public class MonsterGround : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        if (m_onGround != null) { Gizmos.color = Color.green; } else { Gizmos.color = Color.red; }
+        if (m_onGround) { Gizmos.color = Color.green; } else { Gizmos.color = Color.red; }
         Gizmos.DrawWireSphere(transform.position, m_groundRadius);
     }
 
-    public Collider2D GetOnGround() { return m_onGround; }
+    public bool GetOnGround() { return m_onGround; }
 
 }

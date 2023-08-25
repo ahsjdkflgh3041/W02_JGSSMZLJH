@@ -612,6 +612,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29042e8f222fdd34891363a966831b59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_groundRadius: 0.89
+  m_groundLayer:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!1 &890596960
 GameObject:
   m_ObjectHideFlags: 0
@@ -1129,7 +1133,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 643776161914554195, guid: 09b9a6361d0165148b96fddb711d8b8d, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 643776161914554206, guid: 09b9a6361d0165148b96fddb711d8b8d, type: 3}
       propertyPath: m_moveSpeed
@@ -1437,7 +1441,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6462731404506682031, guid: 020666200b6369749b608995f965a9c9, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 020666200b6369749b608995f965a9c9, type: 3}

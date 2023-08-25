@@ -41,8 +41,8 @@ public class MonsterBase : MonoBehaviour, IDamagable
     [SerializeField] protected float m_attackRange;
 
     [Header("Cool Time")]
-    [SerializeField] protected float m_checkCoolTime = 0.5f;
-    [SerializeField] protected float m_hitCoolTime = 0.5f;
+    protected float m_checkCoolTime = 0.5f;
+    protected float m_hitCoolTime = 0.01f;
     [SerializeField] protected float m_attackCoolTime = 1f;
 
     protected bool m_isAttacking;
@@ -88,7 +88,7 @@ public class MonsterBase : MonoBehaviour, IDamagable
 
     protected void LateUpdate()
     {
-        if (m_ground.GetOnGround() != null)
+        if (m_ground.GetOnGround() == true)
             Turn();
     }
 
