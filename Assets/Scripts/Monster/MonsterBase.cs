@@ -7,11 +7,15 @@ using static UnityEngine.GraphicsBuffer;
 
 public class MonsterBase : MonoBehaviour, IDamagable
 {
+    #region Public Variables
+
     public int Health { get { return m_hp; } set { m_hp = value; } }
-    public int Damage { get; set; }
 
+    #endregion
 
-    public enum State
+    #region Protected Variables
+
+    protected enum State
     {
         Idle, Chase, Attack, Hit, Die,
     }
@@ -35,39 +39,48 @@ public class MonsterBase : MonoBehaviour, IDamagable
     [SerializeField] protected float m_detectRange;
     [SerializeField] protected float m_attackRange;
 
-    protected float m_idleTime = 0.5f;
-    protected float m_hitTime = 0.5f;
+    [Header("Cool Time")]
+    [SerializeField] protected float m_checkCoolTime = 0.5f;
+    [SerializeField] protected float m_hitCoolTime = 0.5f;
+    [SerializeField] protected float m_attackCoolTime = 1f;
 
     protected bool m_isAttacking;
     protected bool m_isHit;
 
-    // 수정필요
-    protected float m_attackTime = 1f;
+    #endregion
 
+    #region Public Method
 
-    private void Awake()
+    public void TakeDamage(int damage)
+    {
+        Health -= damage;
+        SetState(State.Hit);
+    }
+
+    #endregion
+
+    #region Protected Method
+
+    protected void Awake()
     {
         m_renderer = GetComponent<SpriteRenderer>();
         m_renderers = GetComponentsInChildren<SpriteRenderer>();
         m_collider = GetComponent<Collider2D>();
     }
 
-    private void Start()
+    protected void Start()
     {
         m_originColor = m_renderer.color;
-        m_attackColor = new Color(255/255f, 122/255f, 0/255f, 255/255f);
+        m_attackColor = new Color(255 / 255f, 122 / 255f, 0 / 255f, 255 / 255f);
         m_hitColor = Color.red;
         m_dieColor = new Color(m_originColor.r, m_originColor.g, m_originColor.b, 60 / 255f);
 
-
         m_state = State.Idle;
-        InvokeRepeating(nameof(CheckTarget), 0f, m_idleTime);
+        InvokeRepeating(nameof(CheckTarget), 0f, m_checkCoolTime);
         StartCoroutine(nameof(StateMachine));
-
-
-        // temp
-        Damage = 1;
     }
+
+    #region State Define
 
     protected IEnumerator StateMachine()
     {
@@ -82,23 +95,27 @@ public class MonsterBase : MonoBehaviour, IDamagable
         m_state = _state;
     }
 
-    void SetState(State _state)
+    protected void SetState(State _state)
     {
         StopAllCoroutines();
 
-        ChangeState(_state);
         m_isAttacking = false;
         m_isHit = false;
         Utility.ChangeColor(m_renderer, m_originColor);
-        
+
+        ChangeState(_state);
         StartCoroutine(nameof(StateMachine));
     }
 
-    protected IEnumerator Idle() 
+    #endregion
+
+    #region Monster State Define
+
+    protected IEnumerator Idle()
     {
         Vector3 randVec = new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), 0);
 
-        for (float i = 0; i < m_idleTime; i += Time.deltaTime)
+        for (float i = 0; i < m_checkCoolTime; i += Time.deltaTime)
         {
             transform.position += randVec * m_moveSpeed * Time.deltaTime;
             m_moveDir.x = (randVec.normalized.x < 0 ? -1 : 1);
@@ -109,24 +126,24 @@ public class MonsterBase : MonoBehaviour, IDamagable
 
     protected IEnumerator Chase()
     {
-        if (m_target == null)
-        {
-            ChangeState(State.Idle);
-            yield break;
-        }
-        Vector3 chaseDir = m_target.transform.position - transform.position;
-
         if (m_isHit == true)
         {
             ChangeState(State.Hit);
             yield break;
         }
 
+        if (m_target == null)
+        {
+            ChangeState(State.Idle);
+            yield break;
+        }
+
+        Vector3 chaseDir = m_target.transform.position - transform.position;
 
         if (chaseDir.magnitude > 0.01f)
         {
             transform.position += chaseDir.normalized * m_moveSpeed * Time.deltaTime;
-            m_moveDir.x = (chaseDir.normalized.x < 0 ? -1 : 1) ;
+            m_moveDir.x = (chaseDir.normalized.x < 0 ? -1 : 1);
             transform.localScale = m_moveDir;
 
             yield return new WaitForEndOfFrame();
@@ -144,7 +161,7 @@ public class MonsterBase : MonoBehaviour, IDamagable
             yield break;
         }
 
-        if (m_isHit == true) 
+        if (m_isHit == true)
         {
             ChangeState(State.Hit);
             yield break;
@@ -152,9 +169,9 @@ public class MonsterBase : MonoBehaviour, IDamagable
 
         m_isAttacking = true;
         m_originColor = m_renderer.color;
-
         Utility.ChangeColor(m_renderer, m_attackColor);
-        yield return new WaitForSeconds(m_attackTime);
+
+        yield return new WaitForSeconds(m_attackCoolTime);
         Utility.ChangeColor(m_renderer, m_originColor);
         m_isAttacking = false;
         ChangeState(State.Chase);
@@ -163,12 +180,11 @@ public class MonsterBase : MonoBehaviour, IDamagable
     protected IEnumerator Hit()
     {
         m_isHit = true;
-        TakeDamage(Damage);
 
         m_originColor = m_renderer.color;
         Utility.ChangeColor(m_renderer, m_hitColor);
-        
-        yield return new WaitForSeconds(m_hitTime);
+
+        yield return new WaitForSeconds(m_hitCoolTime);
         Utility.ChangeColor(m_renderer, m_originColor);
 
         m_isHit = false;
@@ -188,6 +204,8 @@ public class MonsterBase : MonoBehaviour, IDamagable
         Destroy(gameObject);
     }
 
+    #endregion
+
     protected void CheckTarget()
     {
         Collider2D[] cols = Physics2D.OverlapCircleAll(transform.position, m_detectRange);
@@ -204,15 +222,6 @@ public class MonsterBase : MonoBehaviour, IDamagable
         ChangeState(State.Idle);
     }
 
-    protected void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Player") && m_isHit == false)
-        {
-            // 나중에 player가 호출
-            SetState(State.Hit);
-        }    
-    }
-
     protected void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.green;
@@ -222,8 +231,14 @@ public class MonsterBase : MonoBehaviour, IDamagable
         Gizmos.DrawWireSphere(transform.position, m_attackRange);
     }
 
-    public void TakeDamage(int damage)
+    protected void OnCollisionEnter2D(Collision2D collision)
     {
-        Health -= damage;
+        if (collision.gameObject.CompareTag("Player") && m_isHit == false)
+        {
+            // 나중에 player가 호출
+            TakeDamage(1);
+        }
     }
+
+    #endregion
 }
