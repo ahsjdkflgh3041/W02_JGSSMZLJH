@@ -9,8 +9,13 @@ public class RangeMonster : MonsterBase
     {
         yield return StartCoroutine(base.Attack());
 
+        if (m_target == null)
+            yield break;
+
         GameObject bullet = InstanciatePrefab("Bullet", transform);
         Vector3 targetDir = (m_target.transform.position - transform.position).normalized;
+        
+        
         bullet.GetComponent<Bullet>().m_bulletDir = targetDir;
     }
 

@@ -115,8 +115,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_bulletDir: {x: 1, y: 0, z: 0}
-  m_layer:
-    serializedVersion: 2
-    m_Bits: 64
-  m_existTime: 10
   m_bulletSpeed: 5

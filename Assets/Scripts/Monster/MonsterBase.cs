@@ -13,8 +13,12 @@ public class MonsterBase : MonoBehaviour
     }
     [SerializeField] protected State m_state;
 
-    SpriteRenderer m_renderer;
-    SpriteRenderer[] m_renderers;
+    protected SpriteRenderer m_renderer;
+    protected SpriteRenderer[] m_renderers;
+
+    protected Color m_originColor;
+    protected Color m_attackColor;
+    protected Color m_hitColor;
 
     protected Transform m_target;
     protected Vector2 m_moveDir = Vector2.one;
@@ -25,44 +29,56 @@ public class MonsterBase : MonoBehaviour
     [SerializeField] protected float m_detectRange;
     [SerializeField] protected float m_attackRange;
 
-    protected float m_idleTime = 2f;
+    protected float m_idleTime = 0.5f;
+    protected float m_hitTime = 0.5f;
 
-    [SerializeField] protected bool m_isAttacking;
+    protected bool m_isAttacking;
+    [SerializeField]  protected bool m_isHit;
 
     // 수정필요
-    protected float m_attackTime = 1;
+    protected float m_attackTime = 1f;
 
+
+    private void Awake()
+    {
+        m_renderer = GetComponent<SpriteRenderer>();
+        m_renderers = GetComponentsInChildren<SpriteRenderer>();
+    }
 
     private void Start()
     {
+        m_originColor = m_renderer.color;
+        m_attackColor = new Color(255/255f, 122/255f, 0/255f, 255/255f);
+        m_hitColor = Color.red;
+
+
         m_state = State.Idle;
-
-        m_renderer = GetComponent<SpriteRenderer>();
-        m_renderers = GetComponentsInChildren<SpriteRenderer>();
-
-        InvokeRepeating(nameof(CheckTarget), 0f, 0.3f);
+        InvokeRepeating(nameof(CheckTarget), 0f, m_idleTime);
         StartCoroutine(nameof(StateMachine));
     }
 
-    private void Update()
-    {
-        
-    }
-
-    IEnumerator StateMachine()
+    protected IEnumerator StateMachine()
     {
         while (m_hp > 0)
         {
+            InitState();
             yield return StartCoroutine(m_state.ToString());
         }
     }
 
-    void ChangeState(State _state)
+    protected void ChangeState(State _state)
     {
         m_state = _state;
     }
 
-    IEnumerator Idle() 
+    void InitState()
+    { 
+        m_isAttacking = false;
+        m_isHit = false;
+        Utility.ChangeColor(m_renderer, m_originColor);
+    }
+
+    protected IEnumerator Idle() 
     {
         Vector3 randVec = new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), 0);
 
@@ -75,9 +91,21 @@ public class MonsterBase : MonoBehaviour
         }
     }
 
-    IEnumerator Chase()
+    protected IEnumerator Chase()
     {
+        if (m_target == null)
+        {
+            ChangeState(State.Idle);
+            yield break;
+        }
         Vector3 chaseDir = m_target.transform.position - transform.position;
+
+        if (m_isHit == true)
+        {
+            ChangeState(State.Hit);
+            yield break;
+        }
+
 
         if (chaseDir.magnitude > 0.01f)
         {
@@ -100,26 +128,41 @@ public class MonsterBase : MonoBehaviour
             yield break;
         }
 
-        m_isAttacking = true;
+        if (m_isHit == true) 
+        {
+            ChangeState(State.Hit);
+            yield break;
+        }
 
-        Utility.ChangeColor(m_renderer, Color.red);
+        m_isAttacking = true;
+        m_originColor = m_renderer.color;
+
+        Utility.ChangeColor(m_renderer, m_attackColor);
         yield return new WaitForSeconds(m_attackTime);
-        Utility.ChangeColor(m_renderer, Color.white);
+        Utility.ChangeColor(m_renderer, m_originColor);
         m_isAttacking = false;
         ChangeState(State.Chase);
     }
 
-    IEnumerator Hit()
+    protected IEnumerator Hit()
+    {
+        m_isHit = true;
+        m_originColor = m_renderer.color;
+        Utility.ChangeColor(m_renderer, m_hitColor);
+        
+        yield return new WaitForSeconds(m_hitTime);
+        Utility.ChangeColor(m_renderer, m_originColor);
+
+        m_isHit = false;
+        ChangeState(State.Chase);
+    }
+
+    protected IEnumerator Die()
     {
         yield return null;
     }
 
-    IEnumerator Die()
-    {
-        yield return null;
-    }
-
-    void CheckTarget()
+    protected void CheckTarget()
     {
         Collider2D[] cols = Physics2D.OverlapCircleAll(transform.position, m_detectRange);
         foreach (Collider2D col in cols)
@@ -135,7 +178,20 @@ public class MonsterBase : MonoBehaviour
         ChangeState(State.Idle);
     }
 
-    private void OnDrawGizmosSelected()
+    protected void OnCollisionEnter2D(Collision2D collision)
+    {
+
+
+        if (collision.gameObject.CompareTag("Player") && m_isHit == false)
+        {
+            // 나중에 player가 호출
+            StopAllCoroutines();
+            ChangeState(State.Hit);
+            StartCoroutine(nameof(StateMachine));
+        }    
+    }
+
+    protected void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, m_detectRange);
