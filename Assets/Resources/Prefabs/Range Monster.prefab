@@ -143,7 +143,7 @@ GameObject:
   - component: {fileID: 8530748487967785662}
   - component: {fileID: 2826043348572765156}
   m_Layer: 7
-  m_Name: Range Monster Variant
+  m_Name: Range Monster
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
