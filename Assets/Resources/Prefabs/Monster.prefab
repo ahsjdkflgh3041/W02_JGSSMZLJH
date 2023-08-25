@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 643776161697975590}
   - component: {fileID: 643776161697975585}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: eyes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -57,7 +57,7 @@ GameObject:
   - component: {fileID: 643776161914554205}
   - component: {fileID: 643776161914554207}
   - component: {fileID: 643776161914554206}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Monster
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -175,7 +175,9 @@ MonoBehaviour:
   m_moveSpeed: 3
   m_detectRange: 10
   m_attackRange: 7
-  m_isAttacking: 0
+  m_checkCoolTime: 0.5
+  m_hitCoolTime: 0.5
+  m_attackCoolTime: 1
 --- !u!1 &643776162200765262
 GameObject:
   m_ObjectHideFlags: 0
@@ -186,7 +188,7 @@ GameObject:
   m_Component:
   - component: {fileID: 643776162200765257}
   - component: {fileID: 643776162200765256}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Capsule (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -269,7 +271,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 643776162936643389}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Detect Range
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -301,7 +303,7 @@ GameObject:
   m_Component:
   - component: {fileID: 643776163051447822}
   - component: {fileID: 643776163051447817}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -384,7 +386,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 643776163185542729}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}

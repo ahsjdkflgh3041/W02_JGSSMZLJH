@@ -7,6 +7,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 643776161697975591, guid: 09b9a6361d0165148b96fddb711d8b8d, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 643776161914554194, guid: 09b9a6361d0165148b96fddb711d8b8d, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -53,7 +57,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 643776161914554195, guid: 09b9a6361d0165148b96fddb711d8b8d, type: 3}
       propertyPath: m_Name
-      value: Range Monster
+      value: Range Monster Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 643776161914554195, guid: 09b9a6361d0165148b96fddb711d8b8d, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 643776161914554195, guid: 09b9a6361d0165148b96fddb711d8b8d, type: 3}
       propertyPath: m_IsActive
@@ -106,6 +114,22 @@ PrefabInstance:
     - target: {fileID: 643776161914554207, guid: 09b9a6361d0165148b96fddb711d8b8d, type: 3}
       propertyPath: m_Color.r
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 643776162200765262, guid: 09b9a6361d0165148b96fddb711d8b8d, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 643776162936643378, guid: 09b9a6361d0165148b96fddb711d8b8d, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 643776163051447823, guid: 09b9a6361d0165148b96fddb711d8b8d, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 643776163185542734, guid: 09b9a6361d0165148b96fddb711d8b8d, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 09b9a6361d0165148b96fddb711d8b8d, type: 3}
