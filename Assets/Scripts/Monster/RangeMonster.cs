@@ -7,11 +7,11 @@ public class RangeMonster : MonsterBase
 {
     protected override IEnumerator AttackState()
     {
-        yield return StartCoroutine(base.AttackState());
 
         if (m_target == null)
             yield break;
 
+        yield return StartCoroutine(base.AttackState());
         ShotBullet();
     }
 

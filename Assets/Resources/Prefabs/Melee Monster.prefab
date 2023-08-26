@@ -311,6 +311,8 @@ GameObject:
   - component: {fileID: 8860135551187738660}
   - component: {fileID: 8860135551187738655}
   - component: {fileID: 8860135551187738649}
+  - component: {fileID: 323114787}
+  - component: {fileID: 323114793}
   m_Layer: 7
   m_Name: Melee Monster
   m_TagString: Untagged
@@ -442,13 +444,38 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_state: 0
-  m_hp: 5
-  m_moveSpeed: 5
-  m_detectRange: 11.61
+  m_target: {fileID: 0}
+  m_detectRange: 3.4
   m_attackRange: 1
   m_attackPower: 3
   m_attackingTime: 1
   m_attackCoolTime: 2
+--- !u!114 &323114787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8860135551187738661}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe67dc74443f2fa498c9d5ade8e769ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_maxHealth: 10
+--- !u!114 &323114793
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8860135551187738661}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ffaf428459f90b648b319a566e9e3dcc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_moveSpeed: 5
 --- !u!1 &8860135551628056741
 GameObject:
   m_ObjectHideFlags: 0
