@@ -328,12 +328,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acdb123293f741f4a86a9e56909df598, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_dashPower: 0
-  m_maxStamina: 0
-  m_staminaPerDash: 0
-  m_staminaRegenPerSecond: 0
-  m_smashPower: 0
-  m_smashCooldown: 0
+  m_dashPower: 1
+  m_maxStamina: 100
+  m_staminaPerDash: 10
+  m_staminaRegenPerSecond: 10
+  m_smashPower: 3
+  m_smashCooldown: 10
   m_attackableLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -349,7 +349,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67934a6990722794d8c97f955fb2a1f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 0
+  maxHealth: 5
 --- !u!61 &7370753133849849868
 BoxCollider2D:
   m_ObjectHideFlags: 0

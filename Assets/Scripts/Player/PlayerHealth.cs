@@ -13,17 +13,14 @@ public class PlayerHealth : MonoBehaviour, IDamagable
     void Start()
     {
         Health = maxHealth;
+        UIManager.Instance.UpdateUIHP(Health);
         Debug.Log($"PlayerHealth : {Health}/{maxHealth}");
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
     }
 
     public void TakeDamage(int damage)
     {
         Health -= damage;
+        UIManager.Instance.UpdateUIHP(Health);
         Debug.Log($"Player takes {damage} damage!");
         Debug.Log($"PlayerHealth : {Health}/{maxHealth}");
     }
