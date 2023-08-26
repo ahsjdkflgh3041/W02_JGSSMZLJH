@@ -1,9 +1,8 @@
-using Mono.Cecil;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RangeMonster : MonsterBase
+public class BossMonster : MonsterBase
 {
     protected override IEnumerator AttackState()
     {
@@ -11,7 +10,12 @@ public class RangeMonster : MonsterBase
             yield break;
 
         if (m_canAttack == true)
-            ShotBullet();
+        { 
+            for (int i = 0; i < 10; i++) 
+            {
+                ShotBullet();
+            }
+        }   
 
         yield return StartCoroutine(base.AttackState());
     }

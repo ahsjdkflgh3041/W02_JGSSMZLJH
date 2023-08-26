@@ -130,7 +130,7 @@ public class MonsterBase : MonoBehaviour
         for (float i = 0; i < m_detectCoolTime; i += Time.deltaTime)
         {
             m_move.Move();
-            yield return new WaitForEndOfFrame();
+            yield return null;
         }
     }
 
@@ -148,7 +148,7 @@ public class MonsterBase : MonoBehaviour
             m_move.MoveDir = m_targetDir;
 
             m_move.Move();
-            yield return new WaitForEndOfFrame();
+            yield return null;
         }
 
         if (m_targetDir.magnitude < m_attackRange)
@@ -188,7 +188,7 @@ public class MonsterBase : MonoBehaviour
         while (m_attackCoolTimeCounter < m_attackCoolTime)
         {
             m_attackCoolTimeCounter += Time.deltaTime;
-            yield return new WaitForEndOfFrame();
+            yield return null;
         }
 
         m_attackCoolTimeCounter = 0;
@@ -241,8 +241,6 @@ public class MonsterBase : MonoBehaviour
             }
         }
     }
-
-    
 
     protected void OnDrawGizmosSelected()
     {
