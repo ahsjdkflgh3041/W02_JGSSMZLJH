@@ -1437,9 +1437,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4b46094cb878f440b59d1840207488e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_player: {fileID: 377313109}
   m_offset: {x: 0, y: 0, z: -10}
   m_chaseSpeed: 5
+  m_smashSizeChangeSpeed: 16
+  m_originSizeChangeSpeed: 3
+  m_smashCameraSize: 12
 --- !u!1001 &2032893961
 PrefabInstance:
   m_ObjectHideFlags: 0
