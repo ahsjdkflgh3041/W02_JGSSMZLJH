@@ -151,6 +151,10 @@ public class PlayerController : MonoBehaviour
         }
 
         m_onGround = m_ground.GetOnGround();
+        if (m_onGround)
+        {
+            m_canJumpAgain = false;
+        }
         m_desiredVelocityX = (m_directionX == 0 ? 0 : Mathf.Sign(m_directionX)) * m_speedX;
     }
 
