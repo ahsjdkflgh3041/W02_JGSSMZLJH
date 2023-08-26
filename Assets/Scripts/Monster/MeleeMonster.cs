@@ -13,6 +13,7 @@ public class MeleeMonster : MonsterBase
 
         m_meleeAttack = Utility.GetChild(transform, "Melee Attack").gameObject;
         m_meleeAttack.GetComponent<SpriteRenderer>().color = m_attackColor;
+        m_meleeAttack.GetComponent<Melee>().m_meleeDamage = m_attackPower;
         m_meleeAttack.SetActive(false);
     }
 

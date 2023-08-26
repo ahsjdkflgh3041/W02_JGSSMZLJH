@@ -4,18 +4,16 @@ using UnityEngine;
 
 public class MonsterHealth : MonoBehaviour, IDamagable
 {
-    [SerializeField] int m_maxHealth;
     public int Health { get; set; }
-    // Start is called before the first frame update
+
+    MonsterBase m_monsterBase;
+    [SerializeField] int m_maxHealth;
+
     void Start()
     {
-        Health = m_maxHealth;
-    }
+        m_monsterBase = GetComponent<MonsterBase>();
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        Health = m_maxHealth;
     }
 
     public void TakeDamage(int damage)
@@ -24,11 +22,13 @@ public class MonsterHealth : MonoBehaviour, IDamagable
         {
             Health -= damage;
             Debug.Log($"{gameObject.name} takes {damage} damage ({Health}/{m_maxHealth}).");
-            if (Health <= 0)
-            {
-                Debug.Log($"{gameObject.name} died!");
-                gameObject.SetActive(false);
-            }
+
+            m_monsterBase.ForceChangeState(State.HitState);
+            //if (Health <= 0)
+            //{
+            //    Debug.Log($"{gameObject.name} died!");
+            //    gameObject.SetActive(false);
+            //}
         }
     }
 }

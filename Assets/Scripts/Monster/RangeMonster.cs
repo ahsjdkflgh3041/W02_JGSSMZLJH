@@ -5,13 +5,18 @@ using UnityEngine;
 
 public class RangeMonster : MonsterBase
 {
-    protected override IEnumerator Attack()
+    protected override IEnumerator AttackState()
     {
-        yield return StartCoroutine(base.Attack());
+        yield return StartCoroutine(base.AttackState());
 
         if (m_target == null)
             yield break;
 
+        ShotBullet();
+    }
+
+    void ShotBullet()
+    {
         GameObject bullet = InstanciatePrefab("Bullet", transform);
         Vector3 targetDir = (m_target.transform.position - transform.position).normalized;
         bullet.GetComponent<Bullet>().m_bulletDir = targetDir;
@@ -25,7 +30,9 @@ public class RangeMonster : MonsterBase
 
         GameObject instance = Instantiate(prefab, _parent.position, prefab.transform.rotation);
         if (prefab == null) 
-            return null; 
+            return null;
+
+        instance.GetComponent<Bullet>().m_bulletDamage = m_attackPower;
 
         return instance;
     }

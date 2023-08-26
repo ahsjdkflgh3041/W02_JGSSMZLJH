@@ -8,6 +8,7 @@ public class Bullet : MonoBehaviour
     public Vector3 m_bulletDir;
 
     [SerializeField] float m_bulletSpeed;
+    public int m_bulletDamage;
 
     public int Health { get; private set; }
 
@@ -18,6 +19,11 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            collision.gameObject.GetComponent<PlayerHealth>().TakeDamage(m_bulletDamage);
+        }
+
         Destroy(gameObject);
     }
 
