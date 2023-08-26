@@ -73,6 +73,11 @@ public class PlayerController : MonoBehaviour
     private bool m_onGround;
     private bool m_hasJumpedThisFrame;
 
+    public bool IsKeyboardAndMouse { get { return m_input.currentControlScheme.Equals(k_keyboardAndMouseString); } }
+    public bool OnBulletTime { get { return m_onBulletTime; } }
+    public Vector2 DashDirection { get { return m_dashDirection; } }
+    public float DashDistance { get { return m_onBulletTime ? m_smashDistance : m_dashDistance; } }
+
     void Awake()
     {
         m_rigidBody = GetComponent<Rigidbody2D>();
@@ -143,7 +148,7 @@ public class PlayerController : MonoBehaviour
 
     public void OnDashDirection(InputAction.CallbackContext context)
     {
-        if (!m_input.currentControlScheme.Equals(k_keyboardAndMouseString))
+        if (!IsKeyboardAndMouse)
         {
             var inputVector = context.ReadValue<Vector2>();
             if (inputVector != Vector2.zero)
@@ -157,7 +162,7 @@ public class PlayerController : MonoBehaviour
     {
         Time.timeScale = m_onBulletTime ? m_smashBulletTimeSlower : m_defalutTimeScale;
 
-        if (m_input.currentControlScheme.Equals(k_keyboardAndMouseString))
+        if (IsKeyboardAndMouse)
         {
             var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             m_dashDirection = (mousePosition - transform.position).normalized;
