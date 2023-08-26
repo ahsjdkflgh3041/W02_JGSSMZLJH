@@ -22,8 +22,6 @@ public class DashIndicator : MonoBehaviour
 
     void Update()
     {
-        m_lineRenderer.enabled = !m_player.IsKeyboardAndMouse;
-
         var position = transform.parent.position;
         var direction = (Vector3)m_player.DashDirection;
         var startPos = position + direction * m_nearDistance;
