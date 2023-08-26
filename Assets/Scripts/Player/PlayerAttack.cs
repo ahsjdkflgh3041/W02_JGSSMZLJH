@@ -51,7 +51,7 @@ public class PlayerAttack : MonoBehaviour
         
         if (m_currentStamina < m_maxStamina)
         {
-            m_currentStamina += (m_ground.GetOnGround() ? m_staminaRegenOnGround : m_staminaRegen) * Time.deltaTime;
+            m_currentStamina += (m_ground.GetOnGround() || m_ground.GetOnWall()  ? m_staminaRegenOnGround : m_staminaRegen) * Time.deltaTime;
             if (m_currentStamina > m_maxStamina)
             {
                 m_currentStamina = m_maxStamina;

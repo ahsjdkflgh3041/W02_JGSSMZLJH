@@ -203,7 +203,7 @@ public class PlayerController : MonoBehaviour
         m_onGround = m_ground.GetOnGround();
         m_onRightWall = m_ground.GetOnRightWall();
         m_onLeftWall = m_ground.GetOnLeftWall();
-        m_onWall = m_onRightWall || m_onLeftWall;
+        m_onWall = m_ground.GetOnWall();
 
         if (m_hasPerformedWallJump && (!m_jumpInput || m_onGround || !m_canJumpOrDash))
         {
