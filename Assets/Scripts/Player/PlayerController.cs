@@ -29,7 +29,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float m_defaultGravity = 1;
     [SerializeField] private float m_maxFallSpeed = 100f;
     [SerializeField] private float m_wallJumpXModifier = 1;
-    [SerializeField] private float m_wallJumpCoyoteTime = 0.2f;
     [Header("Dash")]
     [SerializeField] private float m_dashDistance;
     [SerializeField] private float m_dashPreDelay;
@@ -52,7 +51,6 @@ public class PlayerController : MonoBehaviour
     private float m_gravityCoefficient;
     private bool m_desiredJump;
     private float m_gravityMultiplier;
-    private float m_wallJumpCoyoteCounter;
     private bool m_desiredDash;
     private bool m_desiredSmash;
     // Temp serialization

@@ -254,7 +254,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: b9fb7c677fb1b5940b5d94402ab875f9, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 1
@@ -272,14 +272,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_speedX: 7.7
+  m_speedY: 7.7
   m_enableDoubleJump: 1
   m_enableJumpCutoff: 1
   m_jumpHeight: 4
-  m_jumpTimeToApex: 0.33
+  m_jumpTimeToApex: 0.4
   m_jumpCutoffGravity: 5.23
-  m_downwardGravity: 2.1
+  m_downwardGravity: 1.1
   m_defaultGravity: 1
   m_maxFallSpeed: 100
+  m_wallJumpXModifier: 1.5
+  m_wallJumpCoyoteTime: 0.2
   m_dashDistance: 5
   m_dashPreDelay: 0.05
   m_dashGravity: 1.75
