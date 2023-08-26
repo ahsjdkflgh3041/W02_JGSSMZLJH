@@ -164,8 +164,8 @@ public class PlayerController : MonoBehaviour
 
         if (IsKeyboardAndMouse)
         {
-            var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            m_dashDirection = (mousePosition - transform.position).normalized;
+            var mousePosition = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            m_dashDirection = (mousePosition - (Vector2)transform.position).normalized;
         }
 
         m_rigidBody.gravityScale = (m_gravityMultiplier * -2 * m_jumpHeight) / (m_jumpTimeToApex * m_jumpTimeToApex * Physics2D.gravity.y);
