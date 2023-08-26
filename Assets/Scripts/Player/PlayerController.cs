@@ -96,22 +96,23 @@ public class PlayerController : MonoBehaviour
         {
             //Debug.Log("Push Dash");
             m_dashInput = true;
-            m_dashInputTime = (float)context.startTime;
+            m_desiredDash = true;
+            //m_dashInputTime = (float)context.startTime;
         }
 
-        if (context.canceled)
-        {
-            if (Time.realtimeSinceStartup < m_dashInputTime + m_dashCriterionTime)
-            {
-                m_desiredDash = true;
-            }  
-            else
-            {
-                //Debug.Log($"dash input too long : {Time.realtimeSinceStartup - m_dashInputTime}");
-            }
+        //if (context.canceled)
+        //{
+        //    if (Time.realtimeSinceStartup < m_dashInputTime + m_dashCriterionTime)
+        //    {
+        //        m_desiredDash = true;
+        //    }  
+        //    else
+        //    {
+        //        //Debug.Log($"dash input too long : {Time.realtimeSinceStartup - m_dashInputTime}");
+        //    }
 
-            m_dashInput = false;
-        }
+        //    m_dashInput = false;
+        //}
     }
 
     public void OnDashDirection(InputAction.CallbackContext context)
