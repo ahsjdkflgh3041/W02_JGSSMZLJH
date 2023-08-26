@@ -29,9 +29,6 @@ public class MonsterMove : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
-        {
-            Debug.Log("turn");
-            MoveDir = Vector2.Reflect(MoveDir, collision.contacts[0].normal);
-        }
+            MoveDir = Vector2.Reflect(MoveDir, collision.contacts[0].normal);   
     }
 }
