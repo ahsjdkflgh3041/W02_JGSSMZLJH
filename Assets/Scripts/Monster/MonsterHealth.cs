@@ -4,11 +4,15 @@ using UnityEngine;
 
 public class MonsterHealth : MonoBehaviour, IDamagable
 {
-    [SerializeField] int m_maxHealth;
     public int Health { get; set; }
+
+    MonsterBase m_monsterBase;
+    [SerializeField] int m_maxHealth;
 
     void Start()
     {
+        m_monsterBase = GetComponent<MonsterBase>();
+
         Health = m_maxHealth;
     }
 
@@ -18,8 +22,8 @@ public class MonsterHealth : MonoBehaviour, IDamagable
         {
             Health -= damage;
             Debug.Log($"{gameObject.name} takes {damage} damage ({Health}/{m_maxHealth}).");
-            
-            ForceChangeState(State.HitState);
+
+            m_monsterBase.ForceChangeState(State.HitState);
             //if (Health <= 0)
             //{
             //    Debug.Log($"{gameObject.name} died!");

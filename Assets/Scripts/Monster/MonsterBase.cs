@@ -5,26 +5,18 @@ using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
-public class MonsterBase : MonoBehaviour, IDamagable
+public class MonsterBase : MonoBehaviour
 {
-    #region Public Variables
-
-    public int Health { get { return m_hp; } set { m_hp = value; } }
-
-    #endregion
-
     #region Protected Variables
 
-    protected enum State
-    {
-        IdleState, ChaseState, AttackState, HitState, DieState,
-    }
+
     [SerializeField] protected State m_state;
 
     protected SpriteRenderer m_renderer;
     protected SpriteRenderer[] m_renderers;
     protected Collider2D m_collider;
     protected MonsterGround m_ground;
+    protected MonsterHealth m_health;
 
     protected Color m_originColor;
     protected Color m_attackColor;
@@ -35,7 +27,6 @@ public class MonsterBase : MonoBehaviour, IDamagable
     protected Vector3 m_moveDir = Vector3.one;
 
     [Header("Status")]
-    [SerializeField] protected int m_hp;
     [SerializeField] protected float m_moveSpeed;
     [SerializeField] protected float m_detectRange;
     [SerializeField] protected float m_attackRange;
@@ -59,10 +50,10 @@ public class MonsterBase : MonoBehaviour, IDamagable
 
     public void TakeDamage(int damage)
     {
-        if (Health <= 0)
+        if (m_health.Health <= 0)
             return;
 
-        Health -= damage;
+        m_health.Health -= damage;
         ForceChangeState(State.HitState);
     }
 
@@ -76,6 +67,7 @@ public class MonsterBase : MonoBehaviour, IDamagable
         m_renderers = GetComponentsInChildren<SpriteRenderer>();
         m_collider = GetComponent<Collider2D>();
         m_ground = GetComponent<MonsterGround>();
+        m_health = GetComponent<MonsterHealth>();
     }
 
     protected virtual void Start()
@@ -107,7 +99,7 @@ public class MonsterBase : MonoBehaviour, IDamagable
         do
         {
             yield return StartCoroutine(m_state.ToString());
-        } while (Health > 0);
+        } while (m_health.Health > 0);
     }
 
     protected void ChangeState(State _state)
@@ -115,7 +107,7 @@ public class MonsterBase : MonoBehaviour, IDamagable
         m_state = _state;
     }
 
-    protected void ForceChangeState(State _state)
+    public void ForceChangeState(State _state)
     {
         StopAllCoroutines();
         Init();
@@ -220,7 +212,7 @@ public class MonsterBase : MonoBehaviour, IDamagable
         Utility.ChangeColor(m_renderer, m_originColor);
         m_isHitting = false;
 
-        if (Health > 0)
+        if (m_health.Health > 0)
             ChangeState(State.ChaseState);
         else
             ForceChangeState(State.DieState);
