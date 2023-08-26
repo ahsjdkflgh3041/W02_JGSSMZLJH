@@ -32,9 +32,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float m_dashGravity;
     //[SerializeField] private float m_dashTime;
     [SerializeField] private float m_dashPostDelay;
+    [Header("Smash")]
+    [SerializeField] private float m_smashDistance;
+    [SerializeField] private float m_smashPreDelay;
+    [SerializeField] private float m_smashPostDelay;
     [Header("Input")]
     [SerializeField] private float m_jumpBuffer = 0.2f;
-    [SerializeField] private float m_dashCriterionTime = 0.2f;
+    [SerializeField] private float m_smashCriterionTime = 0.2f;
 
     private Vector2 m_velocity;
     private float m_directionX;
@@ -42,6 +46,7 @@ public class PlayerController : MonoBehaviour
     private bool m_desiredJump;
     private float m_gravityMultiplier;
     private bool m_desiredDash;
+    private bool m_desiredSmash;
     // Temp serialization
     [Header("temp serialization")] [SerializeField] private Vector2 m_dashDirection;
     private Vector2 m_dashStartPosition;
@@ -49,14 +54,16 @@ public class PlayerController : MonoBehaviour
     private float m_dashStartTime;
     private bool m_jumpInput;
     private float m_jumpBufferCounter;
-    private bool m_dashInput;
-    private float m_dashInputTime;
+    private bool m_smashInput;
+    private float m_smashInputTime;
 
-    private bool m_isDashing;
-    private bool m_hasPerformedDash;
     private bool m_isJumping;
     private bool m_canJumpAgain = false;
     private bool m_canJumpOrDash = true;
+    private bool m_isDashing;
+    private bool m_hasPerformedDash;
+    private bool m_isSmashing;
+    private bool m_hasPerformedSmash;
     private bool m_onGround;
     private bool m_hasJumpedThisFrame;
 
@@ -95,7 +102,6 @@ public class PlayerController : MonoBehaviour
         if (context.started)
         {
             //Debug.Log("Push Dash");
-            m_dashInput = true;
             m_desiredDash = true;
             //m_dashInputTime = (float)context.startTime;
         }
@@ -113,6 +119,29 @@ public class PlayerController : MonoBehaviour
 
         //    m_dashInput = false;
         //}
+    }
+
+    public void OnSmash(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            m_smashInput = true;
+            m_smashInputTime = (float)context.startTime;
+        }
+
+        if (context.canceled)
+        {
+            if (Time.realtimeSinceStartup < m_smashInputTime + m_smashCriterionTime)
+            {
+                m_desiredSmash = true;
+            }
+            else
+            {
+                //Debug.Log($"dash input too long : {Time.realtimeSinceStartup - m_dashInputTime}");
+            }
+
+            m_smashInput = false;
+        }
     }
 
     public void OnDashDirection(InputAction.CallbackContext context)
@@ -212,11 +241,11 @@ public class PlayerController : MonoBehaviour
                 m_canJumpOrDash = true;
 
                 var distance = CalculateDashDistance();
-                Debug.Log($"final distance = {distance}");
+                //Debug.Log($"final distance = {distance}");
                 Debug.DrawLine(transform.position, transform.position + (Vector3)m_dashDirection * distance, Color.red, 3);
                 transform.Translate(m_dashDirection.normalized * distance, Space.Self);
 
-                m_attack.Attack(m_dashStartPosition, transform.position);
+                m_attack.Dash(m_dashStartPosition, transform.position);
             }
 
             if (!m_isJumping)
@@ -259,16 +288,23 @@ public class PlayerController : MonoBehaviour
 
     private void DoADash()
     {
-        //Debug.Log("Dash!");
-        m_isDashing = true;
-        m_isJumping = false;
-        m_canJumpOrDash = false;
         m_desiredDash = false;
-        m_hasPerformedDash = false;
 
-        m_dashStartPosition = (Vector2)transform.position;
-        m_dashTargetPosition = (Vector2)transform.position + m_dashDirection.normalized * m_dashDistance;
-        m_dashStartTime = Time.time;
+        if (m_attack.CanDash)
+        {
+            m_isDashing = true;
+            m_isJumping = false;
+            m_canJumpOrDash = false;
+            m_hasPerformedDash = false;
+
+            m_dashStartPosition = (Vector2)transform.position;
+            m_dashTargetPosition = (Vector2)transform.position + m_dashDirection.normalized * m_dashDistance;
+            m_dashStartTime = Time.time;
+        }
+        else
+        {
+            Debug.Log($"Cannot Dash... Stamina = {m_attack.CurrentStamina}");
+        }
     }
 
     private void SetGravity()
@@ -352,7 +388,7 @@ public class PlayerController : MonoBehaviour
         distances.Add(Mathf.Min(m_dashDistance, Vector2.Distance(downRightPosition, Physics2D.Linecast(downRightPosition, downRightPosition + dashVector, layer).point)));
         distances.Add(Mathf.Min(m_dashDistance, Vector2.Distance(downLeftPosition, Physics2D.Linecast(downLeftPosition, downLeftPosition + dashVector, layer).point)));
 
-        distances.ForEach(d => Debug.Log($"distance = {d}"));
+        //distances.ForEach(d => Debug.Log($"distance = {d}"));
         return distances.Min();
 
         //var start = (Vector2)transform.position;
