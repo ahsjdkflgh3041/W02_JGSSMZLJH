@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
 {
     const string k_keyboardAndMouseString = "Keyboard&Mouse";
     const float k_almosZero = 0.001f;
+    const float k_defalutFixedTimestep = 0.02f;
 
     Rigidbody2D m_rigidBody;
     BoxCollider2D m_boxCollider;
@@ -35,6 +36,7 @@ public class PlayerController : MonoBehaviour
     [Header("Smash")]
     [SerializeField] private float m_smashDistance;
     [SerializeField] private float m_smashPreDelay;
+    [SerializeField] private float m_smashGravity;
     [SerializeField] private float m_smashPostDelay;
     [SerializeField] private float m_smashBulletTimeSlower;
     [Header("Input")]
@@ -61,6 +63,7 @@ public class PlayerController : MonoBehaviour
     private Vector2 m_smashStartPosition;
     private Vector2 m_smashTargetPosition;
     private float m_defalutTimeScale;
+    private float m_lastVelocityY;
 
     private bool m_isJumping;
     private bool m_canJumpAgain = false;
@@ -127,6 +130,7 @@ public class PlayerController : MonoBehaviour
             {
                 m_onBulletTime = true;
                 m_canJumpOrDash = false;
+                m_rigidBody.velocity = new Vector2(m_rigidBody.velocity.x, Mathf.Max(m_rigidBody.velocity.y, m_rigidBody.velocity.y / 4));
             }
             else
             {
@@ -197,7 +201,15 @@ public class PlayerController : MonoBehaviour
         m_hasJumpedThisFrame = false;
 
         m_velocity = m_rigidBody.velocity;
-        m_velocity.x = m_desiredVelocityX;
+
+        if (m_onBulletTime)
+        {
+        }
+        else
+        {
+            m_velocity.x = m_desiredVelocityX;
+            m_lastVelocityY = m_velocity.y;
+        }
 
         if (m_isDashing)
         {
@@ -245,10 +257,7 @@ public class PlayerController : MonoBehaviour
         }
         //else if (dashTime <= m_dashPreDelay + m_dashTime)
         //{
-        //    //m_velocity = m_dashDirection.normalized * m_dashDistance / m_dashTime;
-
-        //    m_velocity = Vector2.zero;
-        //    transform.position = Vector2.Lerp(m_dashStartPosition, m_dashTargetPosition, dashTime - m_dashPreDelay);
+        //    
         //}
         else if (dashTime <= m_dashPreDelay + m_dashPostDelay)
         {
@@ -272,8 +281,6 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            var displacement = (Vector2)transform.position - m_dashStartPosition;
-            //Debug.Log($"Dash Displacement : {displacement} = {displacement.magnitude}");
             m_isDashing = false;
         }
     }
@@ -285,12 +292,9 @@ public class PlayerController : MonoBehaviour
         {
             m_velocity = Vector2.zero;
         }
-        //else if (dashTime <= m_dashPreDelay + m_dashTime)
+        //else if (smashTime <= m_smashPreDelay + m_smashTime)
         //{
-        //    //m_velocity = m_dashDirection.normalized * m_dashDistance / m_dashTime;
 
-        //    m_velocity = Vector2.zero;
-        //    transform.position = Vector2.Lerp(m_dashStartPosition, m_dashTargetPosition, dashTime - m_dashPreDelay);
         //}
         else if (smashTime <= m_smashPreDelay + m_smashPostDelay)
         {
@@ -385,7 +389,18 @@ public class PlayerController : MonoBehaviour
 
         if (m_isDashing)
         {
-            m_gravityMultiplier = m_dashGravity;
+            m_gravityMultiplier = m_dashGravity * k_defalutFixedTimestep / Time.fixedDeltaTime;
+            return;
+        }
+        else if (m_isSmashing)
+        {
+            m_gravityMultiplier = m_smashGravity * k_defalutFixedTimestep / Time.fixedDeltaTime;
+            return;
+        }
+
+        if (m_onBulletTime)
+        {
+            m_gravityMultiplier = m_defaultGravity / 2;
             return;
         }
 
@@ -435,7 +450,6 @@ public class PlayerController : MonoBehaviour
 
             m_gravityMultiplier = m_defaultGravity;
         }
-
         //Debug.Log($"isJumping = {m_isJumping}, jumpInput = {m_jumpInput} : Multiplier = {m_gravityMultiplier}");
     }
 

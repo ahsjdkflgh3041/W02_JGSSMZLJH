@@ -14,7 +14,7 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region UI_Use Variable
-    [HideInInspector] public float MaxHPUI;
+    [HideInInspector] public int MaxHPUI;
     [HideInInspector] public float MaxStaminaUI;
     [HideInInspector] public float MaxCoolDownUI;
     #endregion
@@ -37,9 +37,9 @@ public class UIManager : MonoBehaviour
         m_staminaBarImg.color = tmp;
     }
 
-    public void UpdateUIHP(float  m_currentHP)
+    public void UpdateUIHP(int  m_currentHP)
     {
-        m_hpBarImg.fillAmount = m_currentHP / MaxHPUI;
+        m_hpBarImg.fillAmount = m_currentHP / (float)MaxHPUI;
     }
 
 }
