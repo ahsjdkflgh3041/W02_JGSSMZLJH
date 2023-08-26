@@ -24,7 +24,7 @@ public class PlayerAttack : MonoBehaviour
     private bool m_isAttacking;
 
     public bool CanDash { get { return m_currentStamina >= m_staminaPerDash; } }
-    public bool CanSmash { get { return m_currentSmashCooldown > 0; } }
+    public bool CanSmash { get { return m_currentSmashCooldown <= 0; } }
     public float CurrentStamina { get { return m_currentStamina; } }
 
     private void Awake()
@@ -60,7 +60,6 @@ public class PlayerAttack : MonoBehaviour
         m_currentStamina -= m_staminaPerDash;
 
         var attackables = Physics2D.LinecastAll(start, end, m_attackableLayer).Select(a => a.transform.GetComponent<IDamagable>()).ToList();
-        //Debug.Log($"attackables.count = {attackables.Count}");
         foreach (var attackable in attackables)
         {
             attackable.TakeDamage(m_dashPower);
@@ -68,13 +67,15 @@ public class PlayerAttack : MonoBehaviour
 
         Debug.Log($"Dash! Stamina = {m_currentStamina}/{m_maxStamina}");
     }
-    public void Attack(Vector2 start, Vector2 end)
+    public void Smash(Vector2 start, Vector2 end)
     {
+        m_currentSmashCooldown = m_smashCooldown;
+
         var attackables = Physics2D.LinecastAll(start, end, m_attackableLayer).Select(a => a.transform.GetComponent<IDamagable>()).ToList();
-        //Debug.Log($"attackables.count = {attackables.Count}");
         foreach (var attackable in attackables)
         {
-            attackable.TakeDamage(m_dashPower);
+            attackable.TakeDamage(m_smashPower);
         }
+        Debug.Log("Smash operated!");
     }
 }

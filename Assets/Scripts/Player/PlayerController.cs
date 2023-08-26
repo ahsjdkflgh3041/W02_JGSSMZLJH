@@ -57,6 +57,9 @@ public class PlayerController : MonoBehaviour
     private float m_jumpBufferCounter;
     private bool m_smashInput;
     private float m_smashInputTime;
+    private float m_smashStartTime;
+    private Vector2 m_smashStartPosition;
+    private Vector2 m_smashTargetPosition;
     private float m_defalutTimeScale;
 
     private bool m_isJumping;
@@ -66,6 +69,7 @@ public class PlayerController : MonoBehaviour
     private bool m_hasPerformedDash;
     private bool m_isSmashing;
     private bool m_hasPerformedSmash;
+    private bool m_onBulletTime;
     private bool m_onGround;
     private bool m_hasJumpedThisFrame;
 
@@ -104,45 +108,34 @@ public class PlayerController : MonoBehaviour
     {
         if (context.started)
         {
-            //Debug.Log("Push Dash");
             m_desiredDash = true;
-            //m_dashInputTime = (float)context.startTime;
         }
-
-        //if (context.canceled)
-        //{
-        //    if (Time.realtimeSinceStartup < m_dashInputTime + m_dashCriterionTime)
-        //    {
-        //        m_desiredDash = true;
-        //    }  
-        //    else
-        //    {
-        //        //Debug.Log($"dash input too long : {Time.realtimeSinceStartup - m_dashInputTime}");
-        //    }
-
-        //    m_dashInput = false;
-        //}
     }
 
     public void OnSmash(InputAction.CallbackContext context)
     {
         if (context.started)
         {
+            //Debug.Log("OnSmash started");
             m_smashInput = true;
-            m_smashInputTime = (float)context.startTime;
+            if (!m_onBulletTime && m_attack.CanSmash)
+            {
+                m_onBulletTime = true;
+            }
+            else
+            {
+                Debug.Log("Cannot smash... : on cooldown");
+            }
         }
 
         if (context.canceled)
         {
-            if (Time.realtimeSinceStartup < m_smashInputTime + m_smashCriterionTime)
+            //Debug.Log("OnSmash canceled");
+            if (m_onBulletTime)
             {
+                m_desiredSmash = true;
+                m_onBulletTime = false;
             }
-            else
-            {
-                //Debug.Log($"dash input too long : {Time.realtimeSinceStartup - m_dashInputTime}");
-            }
-
-            m_desiredSmash = true;
             m_smashInput = false;
         }
     }
@@ -161,7 +154,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        Time.timeScale = m_smashInput ? m_smashBulletTimeSlower : m_defalutTimeScale;
+        Time.timeScale = m_onBulletTime ? m_smashBulletTimeSlower : m_defalutTimeScale;
 
         if (m_input.currentControlScheme.Equals(k_keyboardAndMouseString))
         {
@@ -204,17 +197,33 @@ public class PlayerController : MonoBehaviour
         {
             PerformDash();
         }
+        else if (m_isSmashing)
+        {
+            PerformSmash();
+        }
 
         if (m_canJumpOrDash)
         {
-            if (m_desiredDash)
+            if (m_desiredSmash)
             {
-                DoADash();
+                DoASmash();
             }
-            else if (m_desiredJump)
+            else
             {
-                DoAJump();
-                m_hasJumpedThisFrame = true;
+                if (m_desiredDash)
+                {
+                    DoADash();
+                }
+                else if (m_desiredJump)
+                {
+                    DoAJump();
+                    m_hasJumpedThisFrame = true;
+                }
+                
+                if (m_desiredSmash)
+                {
+                    m_desiredSmash = false;
+                }
             }
         }
 
@@ -245,7 +254,7 @@ public class PlayerController : MonoBehaviour
                 m_hasPerformedDash = true;
                 m_canJumpOrDash = true;
 
-                var distance = CalculateDashDistance();
+                var distance = CalculateDistance(m_dashDistance);
                 //Debug.Log($"final distance = {distance}");
                 Debug.DrawLine(transform.position, transform.position + (Vector3)m_dashDirection * distance, Color.red, 3);
                 transform.Translate(m_dashDirection.normalized * distance, Space.Self);
@@ -263,6 +272,48 @@ public class PlayerController : MonoBehaviour
             var displacement = (Vector2)transform.position - m_dashStartPosition;
             //Debug.Log($"Dash Displacement : {displacement} = {displacement.magnitude}");
             m_isDashing = false;
+        }
+    }
+    private void PerformSmash()
+    {
+        float smashTime = Time.time - m_smashStartTime;
+
+        if (smashTime <= m_smashPreDelay)
+        {
+            m_velocity = Vector2.zero;
+        }
+        //else if (dashTime <= m_dashPreDelay + m_dashTime)
+        //{
+        //    //m_velocity = m_dashDirection.normalized * m_dashDistance / m_dashTime;
+
+        //    m_velocity = Vector2.zero;
+        //    transform.position = Vector2.Lerp(m_dashStartPosition, m_dashTargetPosition, dashTime - m_dashPreDelay);
+        //}
+        else if (smashTime <= m_smashPreDelay + m_smashPostDelay)
+        {
+            if (!m_hasPerformedSmash)
+            {
+                m_hasPerformedSmash = true;
+                m_canJumpOrDash = true;
+
+                var distance = CalculateDistance(m_smashDistance);
+                //Debug.Log($"final distance = {distance}");
+                Debug.DrawLine(transform.position, transform.position + (Vector3)m_dashDirection * distance, Color.red, 3);
+                transform.Translate(m_dashDirection.normalized * distance, Space.Self);
+
+                m_attack.Smash(m_smashStartPosition, transform.position);
+            }
+
+            if (!m_isJumping)
+            {
+                m_velocity = Vector2.zero;
+            }
+        }
+        else
+        {
+            var displacement = (Vector2)transform.position - m_dashStartPosition;
+            //Debug.Log($"Dash Displacement : {displacement} = {displacement.magnitude}");
+            m_isSmashing = false;
         }
     }
     private void DoAJump()
@@ -285,7 +336,7 @@ public class PlayerController : MonoBehaviour
             }
 
             m_velocity.y += jumpSpeed;
-            Debug.Log($"jump speed = {jumpSpeed}, velocity y = {m_velocity.y}");
+            //Debug.Log($"jump speed = {jumpSpeed}, velocity y = {m_velocity.y}");
             m_isJumping = true;
         }
 
@@ -310,6 +361,20 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log($"Cannot Dash... Stamina = {m_attack.CurrentStamina}");
         }
+    }
+    private void DoASmash()
+    {
+        //Debug.Log("DoASmash!");
+        m_desiredSmash = false;
+
+        m_isSmashing = true;
+        m_isJumping = false;
+        m_canJumpOrDash = false;
+        m_hasPerformedSmash = false;
+
+        m_smashStartPosition = (Vector2)transform.position;
+        m_smashTargetPosition = (Vector2)transform.position + m_dashDirection.normalized * m_smashDistance;
+        m_smashStartTime = Time.time;
     }
 
     private void SetGravity()
@@ -372,12 +437,12 @@ public class PlayerController : MonoBehaviour
         //Debug.Log($"isJumping = {m_isJumping}, jumpInput = {m_jumpInput} : Multiplier = {m_gravityMultiplier}");
     }
 
-    float CalculateDashDistance()
+    float CalculateDistance(float distance)
     {
         var horizontal = 0.95f * m_boxCollider.size.x * transform.lossyScale.x / 2;
         var vertical = 0.95f * m_boxCollider.size.y * transform.lossyScale.y / 2;
         var position = (Vector2)transform.position;
-        var dashVector = m_dashDirection * m_dashDistance;
+        var dashVector = m_dashDirection * distance;
 
         var upRightPosition = position + Vector2.right * horizontal + Vector2.up * vertical;
         var upLeftPosition = position + Vector2.left * horizontal + Vector2.up * vertical;
@@ -388,10 +453,10 @@ public class PlayerController : MonoBehaviour
         var layer = m_ground.GetLayer();
 
         var distances = new List<float>();
-        distances.Add(Mathf.Min(m_dashDistance, Vector2.Distance(upRightPosition, Physics2D.Linecast(upRightPosition, upRightPosition + dashVector, layer).point)));
-        distances.Add(Mathf.Min(m_dashDistance, Vector2.Distance(upLeftPosition, Physics2D.Linecast(upLeftPosition, upLeftPosition + dashVector, layer).point)));
-        distances.Add(Mathf.Min(m_dashDistance, Vector2.Distance(downRightPosition, Physics2D.Linecast(downRightPosition, downRightPosition + dashVector, layer).point)));
-        distances.Add(Mathf.Min(m_dashDistance, Vector2.Distance(downLeftPosition, Physics2D.Linecast(downLeftPosition, downLeftPosition + dashVector, layer).point)));
+        distances.Add(Mathf.Min(distance, Vector2.Distance(upRightPosition, Physics2D.Linecast(upRightPosition, upRightPosition + dashVector, layer).point)));
+        distances.Add(Mathf.Min(distance, Vector2.Distance(upLeftPosition, Physics2D.Linecast(upLeftPosition, upLeftPosition + dashVector, layer).point)));
+        distances.Add(Mathf.Min(distance, Vector2.Distance(downRightPosition, Physics2D.Linecast(downRightPosition, downRightPosition + dashVector, layer).point)));
+        distances.Add(Mathf.Min(distance, Vector2.Distance(downLeftPosition, Physics2D.Linecast(downLeftPosition, downLeftPosition + dashVector, layer).point)));
 
         //distances.ForEach(d => Debug.Log($"distance = {d}"));
         return distances.Min();
