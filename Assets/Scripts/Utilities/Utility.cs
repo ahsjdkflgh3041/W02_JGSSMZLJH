@@ -33,4 +33,17 @@ public class Utility : MonoBehaviour
         }
         return null;
     }
+
+    public static GameObject InstanciatePrefab(string _prefab, Transform _parent)
+    {
+        GameObject prefab = Resources.Load<GameObject>($"Prefabs/{_prefab}");
+        if (prefab == null)
+            return null;
+
+        GameObject instance = Instantiate(prefab, _parent.position, prefab.transform.rotation);
+        if (prefab == null)
+            return null;
+
+        return instance;
+    }
 }
