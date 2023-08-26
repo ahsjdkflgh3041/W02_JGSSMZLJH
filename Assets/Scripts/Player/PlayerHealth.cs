@@ -13,7 +13,7 @@ public class PlayerHealth : MonoBehaviour, IDamagable
     void Start()
     {
         Health = maxHealth;
-        UIManager.Instance.UpdateUIHP(Health);
+        UIManager.Instance.MaxHPUI = Health;
         Debug.Log($"PlayerHealth : {Health}/{maxHealth}");
     }
 
