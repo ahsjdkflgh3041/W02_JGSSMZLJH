@@ -70,7 +70,7 @@ public class PlayerAttack : MonoBehaviour
             attackable.TakeDamage(m_dashPower);
         }
 
-        Debug.Log($"Dash! Stamina = {m_currentStamina}/{m_maxStamina}");
+        //Debug.Log($"Dash! Stamina = {m_currentStamina}/{m_maxStamina}");
     }
     public void Smash(Vector2 start, Vector2 end)
     {
