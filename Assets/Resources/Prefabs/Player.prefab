@@ -329,11 +329,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_dashPower: 1
-  m_maxStamina: 100
+  m_maxStamina: 50
   m_staminaPerDash: 10
-  m_staminaRegenPerSecond: 10
+  m_staminaRegen: 8
+  m_staminaRegenOnGround: 200
   m_smashPower: 3
-  m_smashCooldown: 10
+  m_smashCooldown: 5
   m_attackableLayer:
     serializedVersion: 2
     m_Bits: 128

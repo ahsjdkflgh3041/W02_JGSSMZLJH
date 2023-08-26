@@ -9,7 +9,8 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private int m_dashPower;
     [SerializeField] private float m_maxStamina;
     [SerializeField] private float m_staminaPerDash;
-    [SerializeField] private float m_staminaRegenPerSecond;
+    [SerializeField] private float m_staminaRegen;
+    [SerializeField] private float m_staminaRegenOnGround;
     [Header("Smash")]
     [SerializeField] private int m_smashPower;
     [SerializeField] private float m_smashCooldown;
@@ -17,6 +18,7 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private LayerMask m_attackableLayer;
 
     //private UIManager uiManager;
+    private PlayerGround m_ground;
 
     private float m_currentStamina;
     private float m_currentSmashCooldown;
@@ -30,6 +32,8 @@ public class PlayerAttack : MonoBehaviour
     private void Awake()
     {
         // uiManager = FindObjectOfType<UIManager>();
+        m_ground = GetComponent<PlayerGround>();
+
         m_currentStamina = m_maxStamina;
         m_currentSmashCooldown = -1;
     }
@@ -47,7 +51,7 @@ public class PlayerAttack : MonoBehaviour
         
         if (m_currentStamina < m_maxStamina)
         {
-            m_currentStamina += m_staminaRegenPerSecond * Time.deltaTime;
+            m_currentStamina += (m_ground.GetOnGround() ? m_staminaRegenOnGround : m_staminaRegen) * Time.deltaTime;
             if (m_currentStamina > m_maxStamina)
             {
                 m_currentStamina = m_maxStamina;
