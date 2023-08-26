@@ -286,8 +286,9 @@ MonoBehaviour:
   m_dashPostDelay: 0.25
   m_smashDistance: 10
   m_smashPreDelay: 0.05
+  m_smashGravity: 1.75
   m_smashPostDelay: 0.25
-  m_smashBulletTimeSlower: 0.1
+  m_smashBulletTimeSlower: 0.05
   m_jumpBuffer: 0.2
   m_smashCriterionTime: 0.2
   m_dashDirection: {x: 1, y: 1}
