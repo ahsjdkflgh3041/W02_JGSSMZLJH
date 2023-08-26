@@ -57,7 +57,7 @@ public class PlayerAttack : MonoBehaviour
                 m_currentStamina = m_maxStamina;
             }
         }
-        UIManager.Instance.UpdateUIAtk(m_currentStamina, m_currentSmashCooldown);
+        UIManager.Instance.UpdateUIAtk(CanDash, m_currentStamina, m_currentSmashCooldown);
     }
 
     public void Dash(Vector2 start, Vector2 end)

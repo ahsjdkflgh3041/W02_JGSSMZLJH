@@ -26,10 +26,15 @@ public class UIManager : MonoBehaviour
     }
     #endregion
 
-    public void UpdateUIAtk(float m_currentStamina, float m_currentSmashCooldown)
+    public void UpdateUIAtk(bool CanDash, float m_currentStamina, float m_currentSmashCooldown)
     {
         m_staminaBarImg.fillAmount = m_currentStamina / MaxStaminaUI;
         m_smashCoolDownImg.fillAmount = (m_currentSmashCooldown / MaxCoolDownUI);
+        Color tmp = m_staminaBarImg.color;
+
+        if (CanDash) { tmp.a = 1.0f;}
+        else { tmp.a = 0.38f; }
+        m_staminaBarImg.color = tmp;
     }
 
     public void UpdateUIHP(float  m_currentHP)
