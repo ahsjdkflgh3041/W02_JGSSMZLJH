@@ -35,7 +35,8 @@ public class PlayerAttack : MonoBehaviour
     }
     private void Start()
     { 
-
+        UIManager.Instance.MaxStaminaUI = m_maxStamina;
+        UIManager.Instance.MaxCoolDownUI = m_smashCooldown;
     }
     private void Update()
     {
@@ -52,7 +53,7 @@ public class PlayerAttack : MonoBehaviour
                 m_currentStamina = m_maxStamina;
             }
         }
-        // uiManager.UpdateUI(m_currentStamina, m_maxStamina, m_currentSmashCooldown, m_smashCooldown);
+        UIManager.Instance.UpdateUIAtk(m_currentStamina, m_currentSmashCooldown);
     }
 
     public void Dash(Vector2 start, Vector2 end)

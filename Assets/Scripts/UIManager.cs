@@ -29,7 +29,7 @@ public class UIManager : MonoBehaviour
     public void UpdateUIAtk(float m_currentStamina, float m_currentSmashCooldown)
     {
         m_staminaBarImg.fillAmount = m_currentStamina / MaxStaminaUI;
-        m_smashCoolDownImg.fillAmount = 1.0f - (m_currentSmashCooldown / MaxCoolDownUI);
+        m_smashCoolDownImg.fillAmount = (m_currentSmashCooldown / MaxCoolDownUI);
     }
 
     public void UpdateUIHP(float  m_currentHP)
