@@ -23,11 +23,11 @@ public class RangeMonster : MonsterBase
         if (prefab == null ) 
             return  null;
 
-        GameObject bullet = Instantiate(prefab, _parent.position, prefab.transform.rotation);
+        GameObject instance = Instantiate(prefab, _parent.position, prefab.transform.rotation);
         if (prefab == null) 
             return null; 
 
-        return bullet;
+        return instance;
     }
 
 }
