@@ -137,8 +137,12 @@ MonoBehaviour:
   m_dashPreDelay: 0.05
   m_dashGravity: 1.75
   m_dashPostDelay: 0.25
+  m_smashDistance: 5
+  m_smashPreDelay: 0.05
+  m_smashPostDelay: 0.25
+  m_smashBulletTimeSlower: 0.1
   m_jumpBuffer: 0.2
-  m_dashCriterionTime: 0.2
+  m_smashCriterionTime: 0.2
   m_dashDirection: {x: 1, y: 1}
 --- !u!114 &7370753133849849863
 MonoBehaviour:
@@ -291,6 +295,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 06238f13-d29f-47b9-a596-03f55fe26bd8
     m_ActionName: Player/New action
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7370753133849849864}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: OnSmash
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 3aff27e3-94fc-409e-8f7d-02ea98dc5abe
+    m_ActionName: Player/New action
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -308,7 +328,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acdb123293f741f4a86a9e56909df598, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_attackPower: 1
+  m_dashPower: 0
+  m_maxStamina: 0
+  m_staminaPerDash: 0
+  m_staminaRegenPerSecond: 0
+  m_smashPower: 0
+  m_smashCooldown: 0
   m_attackableLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -324,6 +349,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67934a6990722794d8c97f955fb2a1f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxHealth: 0
 --- !u!61 &7370753133849849868
 BoxCollider2D:
   m_ObjectHideFlags: 0

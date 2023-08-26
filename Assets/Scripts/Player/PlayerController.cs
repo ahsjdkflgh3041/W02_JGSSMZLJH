@@ -36,6 +36,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float m_smashDistance;
     [SerializeField] private float m_smashPreDelay;
     [SerializeField] private float m_smashPostDelay;
+    [SerializeField] private float m_smashBulletTimeSlower;
     [Header("Input")]
     [SerializeField] private float m_jumpBuffer = 0.2f;
     [SerializeField] private float m_smashCriterionTime = 0.2f;
@@ -56,6 +57,7 @@ public class PlayerController : MonoBehaviour
     private float m_jumpBufferCounter;
     private bool m_smashInput;
     private float m_smashInputTime;
+    private float m_defalutTimeScale;
 
     private bool m_isJumping;
     private bool m_canJumpAgain = false;
@@ -76,6 +78,7 @@ public class PlayerController : MonoBehaviour
         m_input = GetComponent<PlayerInput>();
 
         m_gravityMultiplier = m_defaultGravity;
+        m_defalutTimeScale = Time.timeScale;
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -133,13 +136,13 @@ public class PlayerController : MonoBehaviour
         {
             if (Time.realtimeSinceStartup < m_smashInputTime + m_smashCriterionTime)
             {
-                m_desiredSmash = true;
             }
             else
             {
                 //Debug.Log($"dash input too long : {Time.realtimeSinceStartup - m_dashInputTime}");
             }
 
+            m_desiredSmash = true;
             m_smashInput = false;
         }
     }
@@ -158,6 +161,8 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        Time.timeScale = m_smashInput ? m_smashBulletTimeSlower : m_defalutTimeScale;
+
         if (m_input.currentControlScheme.Equals(k_keyboardAndMouseString))
         {
             var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
