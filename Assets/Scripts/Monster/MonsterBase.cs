@@ -15,19 +15,19 @@ public class MonsterBase : MonoBehaviour
     protected SpriteRenderer m_renderer;
     protected SpriteRenderer[] m_renderers;
     protected Collider2D m_collider;
-    protected MonsterGround m_ground;
     protected MonsterHealth m_health;
+    protected MonsterMove m_move;
 
     protected Color m_originColor;
     protected Color m_attackColor;
     protected Color m_hitColor;
     protected Color m_dieColor;
 
-    protected Transform m_target;
-    protected Vector3 m_moveDir = Vector3.one;
+    [SerializeField] protected Transform m_target;
+    protected Vector3 m_moveDir;
+    protected Vector3 m_targetDir;
 
     [Header("Status")]
-    [SerializeField] protected float m_moveSpeed;
     [SerializeField] protected float m_detectRange;
     [SerializeField] protected float m_attackRange;
     [SerializeField] protected int m_attackPower;
@@ -35,7 +35,7 @@ public class MonsterBase : MonoBehaviour
     [Header("Time")]
     protected float m_detectCoolTime = 0.5f;
     protected float m_hitCoolTime = 0.5f;
-    [SerializeField] protected float m_attackingTime = 1f;
+    [SerializeField] protected float m_attackingTime = 0.5f;
     [SerializeField] protected float m_attackCoolTime;
     protected float m_attackCoolTimeCounter;
 
@@ -66,8 +66,8 @@ public class MonsterBase : MonoBehaviour
         m_renderer = GetComponent<SpriteRenderer>();
         m_renderers = GetComponentsInChildren<SpriteRenderer>();
         m_collider = GetComponent<Collider2D>();
-        m_ground = GetComponent<MonsterGround>();
         m_health = GetComponent<MonsterHealth>();
+        m_move = GetComponent<MonsterMove>();
     }
 
     protected virtual void Start()
@@ -84,12 +84,6 @@ public class MonsterBase : MonoBehaviour
 
     protected virtual void Update()
     {
-    }
-
-    protected void LateUpdate()
-    {
-        if (m_ground.GetOnGround() == true)
-            Turn();
     }
 
     #region State Define
@@ -127,15 +121,15 @@ public class MonsterBase : MonoBehaviour
 
     #region Monster State Define
 
+    
     protected IEnumerator IdleState()
     {
-        m_moveDir = new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), 0);
+        Vector3 randomDir = new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), 0);
+        m_move.MoveDir = randomDir;
 
         for (float i = 0; i < m_detectCoolTime; i += Time.deltaTime)
         {
-            transform.position += m_moveDir * m_moveSpeed * Time.deltaTime;
-            this.m_moveDir.x = (m_moveDir.normalized.x < 0 ? -1 : 1);
-            transform.localScale = new Vector3(this.m_moveDir.x, 1, 1);
+            m_move.Move();
             yield return new WaitForEndOfFrame();
         }
     }
@@ -147,19 +141,17 @@ public class MonsterBase : MonoBehaviour
             ChangeState(State.IdleState);
             yield break;
         }
+        m_targetDir = m_target.transform.position - transform.position;
 
-        m_moveDir = m_target.transform.position - transform.position;
-
-        if (m_moveDir.magnitude > 0.5f)
+        if (m_targetDir.magnitude > 0.5f)
         {
-            transform.position += m_moveDir.normalized * m_moveSpeed * Time.deltaTime;
-            m_moveDir.x = (m_moveDir.normalized.x < 0 ? -1 : 1);
-            transform.localScale = new Vector3(this.m_moveDir.x, 1, 1);
+            m_move.MoveDir = m_targetDir;
 
+            m_move.Move();
             yield return new WaitForEndOfFrame();
         }
 
-        if (m_moveDir.magnitude < m_attackRange)
+        if (m_targetDir.magnitude < m_attackRange)
             ChangeState(State.AttackState);
     }
 
@@ -233,7 +225,13 @@ public class MonsterBase : MonoBehaviour
     {
         Collider2D[] cols = Physics2D.OverlapCircleAll(transform.position, m_detectRange, LayerMask.GetMask("Player"));
 
-        if (cols != null)
+        if (cols == null)
+        {
+            m_target = null;
+            ChangeState(State.IdleState);
+            
+        }
+        else
         {
             foreach (Collider2D col in cols)
             {
@@ -242,17 +240,9 @@ public class MonsterBase : MonoBehaviour
                 return;
             }
         }
-        else
-        {
-            m_target = null;
-            ChangeState(State.IdleState);
-        }
     }
 
-    protected void Turn()
-    {
-        m_moveDir = new Vector3(m_moveDir.x * -1, m_moveDir.y * -1, m_moveDir.z);
-    }
+    
 
     protected void OnDrawGizmosSelected()
     {
