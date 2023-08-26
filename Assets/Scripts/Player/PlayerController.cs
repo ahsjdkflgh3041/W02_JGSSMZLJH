@@ -121,6 +121,7 @@ public class PlayerController : MonoBehaviour
             if (!m_onBulletTime && m_attack.CanSmash)
             {
                 m_onBulletTime = true;
+                m_canJumpOrDash = false;
             }
             else
             {
@@ -202,28 +203,25 @@ public class PlayerController : MonoBehaviour
             PerformSmash();
         }
 
-        if (m_canJumpOrDash)
+        if (m_desiredSmash)
         {
+            DoASmash();
+        }
+        if (m_canJumpOrDash)
+        { 
+            if (m_desiredDash)
+            {
+                DoADash();
+            }
+            else if (m_desiredJump)
+            {
+                DoAJump();
+                m_hasJumpedThisFrame = true;
+            }
+                
             if (m_desiredSmash)
             {
-                DoASmash();
-            }
-            else
-            {
-                if (m_desiredDash)
-                {
-                    DoADash();
-                }
-                else if (m_desiredJump)
-                {
-                    DoAJump();
-                    m_hasJumpedThisFrame = true;
-                }
-                
-                if (m_desiredSmash)
-                {
-                    m_desiredSmash = false;
-                }
+                m_desiredSmash = false;
             }
         }
 
@@ -369,7 +367,6 @@ public class PlayerController : MonoBehaviour
 
         m_isSmashing = true;
         m_isJumping = false;
-        m_canJumpOrDash = false;
         m_hasPerformedSmash = false;
 
         m_smashStartPosition = (Vector2)transform.position;
