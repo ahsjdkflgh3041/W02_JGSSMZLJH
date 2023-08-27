@@ -6,3 +6,8 @@ public enum State
 {
     IdleState, ChaseState, AttackState, HitState, DieState,
 }
+
+public enum ItemType
+{ 
+    Heart, SavePoint,
+}
