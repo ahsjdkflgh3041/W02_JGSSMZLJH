@@ -4,6 +4,7 @@ using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
+using Random = UnityEngine.Random;
 
 public class MonsterBase : MonoBehaviour
 {
@@ -18,12 +19,13 @@ public class MonsterBase : MonoBehaviour
     protected MonsterHealth m_health;
     protected MonsterMove m_move;
 
+    [Header("Color")]
     protected Color m_originColor;
     protected Color m_attackColor;
     protected Color m_hitColor;
     protected Color m_dieColor;
 
-    [SerializeField] protected Transform m_target;
+    protected Transform m_target;
     protected Vector3 m_moveDir;
     protected Vector3 m_targetDir;
 
@@ -39,6 +41,9 @@ public class MonsterBase : MonoBehaviour
     [SerializeField] protected float m_attackCoolTime;
     protected float m_attackCoolTimeCounter;
     protected float m_dieIntervalTime = 0.5f;
+
+    [Header("Drop Item")]
+    [SerializeField] GameObject m_dropItem;
 
     protected bool m_isAttacking;
     protected bool m_canAttack = true;
@@ -122,7 +127,7 @@ public class MonsterBase : MonoBehaviour
 
     #region Monster State Define
 
-    
+
     protected IEnumerator IdleState()
     {
         Vector3 randomDir = new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), 0);
@@ -185,7 +190,7 @@ public class MonsterBase : MonoBehaviour
     protected IEnumerator WaitAttackCoolTime()
     {
         if (m_canAttack == true) yield break;
-            
+
         while (m_attackCoolTimeCounter < m_attackCoolTime)
         {
             m_attackCoolTimeCounter += Time.deltaTime;
@@ -216,6 +221,8 @@ public class MonsterBase : MonoBehaviour
         Utility.ChangeColor(m_renderer, m_dieColor);
         m_collider.isTrigger = true;
 
+        DropItem();
+
         yield return new WaitForSeconds(m_dieIntervalTime);
         Destroy(gameObject);
     }
@@ -230,7 +237,7 @@ public class MonsterBase : MonoBehaviour
         {
             m_target = null;
             ChangeState(State.IdleState);
-            
+
         }
         else
         {
@@ -241,6 +248,28 @@ public class MonsterBase : MonoBehaviour
                 return;
             }
         }
+    }
+
+    protected void DropItem()
+    {
+        if (m_dropItem == null) return;
+        if (m_state != State.DieState) return;
+
+        bool isHeart = (m_dropItem.GetComponent<ItemBase>().ItemType == ItemType.Heart);
+        if (isHeart && (Random.Range(0, 3) > 0))
+            return;
+
+        GameObject dropItem = GameObject.Instantiate<GameObject>(m_dropItem);
+
+        dropItem.transform.position = transform.position;
+        dropItem.GetComponent<Rigidbody2D>().velocity = Vector3.up * 7f;
+
+        GameObject go = GameObject.Find("DropItems");
+        if (go == null)
+        {
+            go = new GameObject() { name = "DropItems" };
+        }
+        dropItem.transform.SetParent(go.transform);
     }
 
     protected void OnDrawGizmosSelected()

@@ -213,6 +213,7 @@ GameObject:
   - component: {fileID: 3872069275443904261}
   - component: {fileID: 2913314825298806345}
   - component: {fileID: 2795091462495535477}
+  - component: {fileID: 5532196617092066012}
   m_Layer: 0
   m_Name: Heart
   m_TagString: Untagged
@@ -299,3 +300,17 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 0.5, y: 0.97}
   m_Direction: 1
+--- !u!114 &5532196617092066012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7456019442728126548}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea4ef29e1597ca04490b8f46aa2a18ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_itemType: 0
+  m_healingPower: 1

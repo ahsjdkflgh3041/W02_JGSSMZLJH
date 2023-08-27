@@ -445,12 +445,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_state: 0
-  m_target: {fileID: 0}
   m_detectRange: 10
   m_attackRange: 1
   m_attackPower: 3
   m_attackingTime: 1
   m_attackCoolTime: 2
+  m_dropItem: {fileID: 7456019442728126548, guid: 35fb82fc740ee674ea23eb46802ef36e, type: 3}
 --- !u!114 &323114787
 MonoBehaviour:
   m_ObjectHideFlags: 0
