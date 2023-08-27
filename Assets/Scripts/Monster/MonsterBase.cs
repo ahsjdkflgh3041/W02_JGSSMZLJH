@@ -38,6 +38,7 @@ public class MonsterBase : MonoBehaviour
     [SerializeField] protected float m_attackingTime = 0.5f;
     [SerializeField] protected float m_attackCoolTime;
     protected float m_attackCoolTimeCounter;
+    protected float m_dieIntervalTime = 0.5f;
 
     protected bool m_isAttacking;
     protected bool m_canAttack = true;
@@ -215,7 +216,7 @@ public class MonsterBase : MonoBehaviour
         Utility.ChangeColor(m_renderer, m_dieColor);
         m_collider.isTrigger = true;
 
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(m_dieIntervalTime);
         Destroy(gameObject);
     }
 
