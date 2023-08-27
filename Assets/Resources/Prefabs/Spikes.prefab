@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 1398495856996013314}
   - component: {fileID: 1398495856996013318}
   - component: {fileID: 1398495856996013319}
-  m_Layer: 8
+  m_Layer: 3
   m_Name: Spikes
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -95,7 +95,7 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: -0.0056915283, y: -0.28956604}
+    - - {x: 0.0049591064, y: 0.5807266}
       - {x: -0.49842745, y: 0.5794561}
       - {x: -0.9952788, y: -0.2911185}
       - {x: 1.0009705, y: -0.29188132}
@@ -110,7 +110,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1398495857274605583}
   - component: {fileID: 1398495857274605568}
-  m_Layer: 8
+  m_Layer: 3
   m_Name: Spike
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -193,7 +193,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1398495857626691450}
-  m_Layer: 8
+  m_Layer: 3
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -227,7 +227,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1398495858856990701}
   - component: {fileID: 1398495858856990702}
-  m_Layer: 8
+  m_Layer: 3
   m_Name: 'Spike '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
