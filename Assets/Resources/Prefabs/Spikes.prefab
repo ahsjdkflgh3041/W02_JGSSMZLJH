@@ -48,6 +48,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_spikeDamage: 1
+  m_coolTime: 3
 --- !u!50 &1398495856996013318
 Rigidbody2D:
   serializedVersion: 4

@@ -6,7 +6,7 @@ public class HiddenSpike : MonoBehaviour
 {
     [SerializeField] int m_spikeDamage;
     [SerializeField] float m_coolTime;
-    [SerializeField] float m_interval;
+    [SerializeField] float m_upInterval;
 
     Animator m_animator;
 
@@ -21,7 +21,7 @@ public class HiddenSpike : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player") && m_canAttack == true)
         {
-            Invoke(nameof(OnUp), m_interval);
+            Invoke(nameof(OnUp), m_upInterval);
         }    
     }
 
