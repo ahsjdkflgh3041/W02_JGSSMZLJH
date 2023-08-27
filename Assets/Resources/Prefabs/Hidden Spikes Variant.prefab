@@ -11,6 +11,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Hidden Spikes Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 1398495856996013313, guid: c8109bd5805f44e4f925b3e7918d2f6f, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1398495856996013313, guid: c8109bd5805f44e4f925b3e7918d2f6f, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
     - target: {fileID: 1398495856996013317, guid: c8109bd5805f44e4f925b3e7918d2f6f, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -59,9 +67,25 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1398495857274605582, guid: c8109bd5805f44e4f925b3e7918d2f6f, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1398495857626691449, guid: c8109bd5805f44e4f925b3e7918d2f6f, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1398495857626691449, guid: c8109bd5805f44e4f925b3e7918d2f6f, type: 3}
+      propertyPath: m_TagString
+      value: Ground
+      objectReference: {fileID: 0}
     - target: {fileID: 1398495857626691450, guid: c8109bd5805f44e4f925b3e7918d2f6f, type: 3}
       propertyPath: m_LocalPosition.y
       value: -0.721
+      objectReference: {fileID: 0}
+    - target: {fileID: 1398495858856990700, guid: c8109bd5805f44e4f925b3e7918d2f6f, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 1398495856996013319, guid: c8109bd5805f44e4f925b3e7918d2f6f, type: 3}
@@ -111,8 +135,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_spikeDamage: 1
-  m_coolTime: 2
-  m_interval: 0.5
+  m_coolTime: 1
+  m_upInterval: 0.5
 --- !u!1 &1450189198376595768 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1398495857626691449, guid: c8109bd5805f44e4f925b3e7918d2f6f, type: 3}
@@ -143,7 +167,7 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: -0.0033416748, y: -0.2790146}
+    - - {x: -0.02042389, y: 0.5751343}
       - {x: -0.5069037, y: 0.56949973}
       - {x: -0.99519485, y: -0.28805912}
       - {x: 1.001886, y: -0.28471732}
