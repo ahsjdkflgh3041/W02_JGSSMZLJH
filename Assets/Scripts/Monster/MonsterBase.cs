@@ -129,7 +129,7 @@ public class MonsterBase : MonoBehaviour
 
         for (float i = 0; i < m_detectCoolTime; i += Time.deltaTime)
         {
-            m_move.Move();
+            //m_move.Move();
             yield return null;
         }
     }
