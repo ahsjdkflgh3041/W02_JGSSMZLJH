@@ -1,26 +1,36 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+//using UnityEngine.UIElements;
 
 public class BossHealth : MonoBehaviour, IDamagable
 {
     public int Health { get; set; }
-    [SerializeField] int m_maxHealth;
-
     public bool CanHit { get { return m_canHit; } set { m_canHit = value; } }
-
-
-    bool m_canHit = true;
-    int m_hitCounter;
-    [SerializeField] public float m_hitCoolTime;
+    
+    public float m_hitCoolTime;
 
     Boss m_boss;
+    Slider m_slider;
+
+    [SerializeField] int m_maxHealth;
+    int m_hitCounter;
+
+    bool m_canHit = true;
 
     public void Start()
     {
         TryGetComponent<Boss>(out m_boss);
+        Utility.GetChild(transform, "Slider").gameObject.TryGetComponent<Slider>(out m_slider);
 
         Health = m_maxHealth;
+    }
+
+    private void Update()
+    {
+        if (Health >= 0)
+            m_slider.value = (float)Health / m_maxHealth;
     }
 
     public void TakeDamage(int damage)

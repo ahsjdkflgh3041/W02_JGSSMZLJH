@@ -11,13 +11,13 @@ public class Monster : MonoBehaviour
     [HideInInspector] public MonsterMove m_move;
 
     [Header("Color")]
-    public Color m_originColor;
-    public Color m_attackColor;
-    public Color m_hitColor;
-    public Color m_dieColor;
+    [HideInInspector] public Color m_originColor;
+    [HideInInspector] public Color m_attackColor;
+    [HideInInspector] public Color m_hitColor;
+    [HideInInspector] public Color m_dieColor;
 
-    [Header("Time")]
-    public float m_dieIntervalTime = 0.5f;
+    //[Header("Time")]
+    //public float m_dieIntervalTime = 0.5f;
 
     [Header("Drop Item")]
     [SerializeField] GameObject m_dropItem;

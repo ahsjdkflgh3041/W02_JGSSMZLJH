@@ -52,7 +52,6 @@ public class BossPattern1 : BossPattern
         {
             SummonMonster();
         }
-        Debug.Log($"pattern1");
     }
 
     void SummonMonster()
@@ -84,6 +83,7 @@ public class BossPattern2 : BossPattern
 
     float m_shotCoolTime;
     float m_shotCoolTimeCounter;
+    float m_bulletSpeed;
 
     int m_bulletNum;
     int m_currentBulletNum;
@@ -91,8 +91,9 @@ public class BossPattern2 : BossPattern
     public BossPattern2()
     {
         m_coolTime = 30;
-        m_shotCoolTime = 1f;
+        m_shotCoolTime = 1.5f;
         m_bulletNum = 20;
+        m_bulletSpeed = 1;
     }
 
     public override void ExcuteAttack()
@@ -138,37 +139,37 @@ public class BossPattern2 : BossPattern
         Bullet bullet = GameObject.Instantiate(prefab, m_bossTransform.position, m_bossTransform.rotation).GetComponent<Bullet>();
         bullet.m_bulletDir = m_targetDir.normalized;
         bullet.GetComponent<Transform>().localScale = Vector3.one * 3;
+        bullet.m_bulletSpeed *= m_bulletSpeed;
     }
 }
 
 public class BossPattern3 : BossPattern
 {
-    Transform m_playerTransform;
     Transform m_bossTransform;
-    Vector3 m_targetDir;
 
     float m_shotCoolTime;
     float m_shotCoolTimeCounter;
 
     int m_bulletNum;
-    int m_currentBulletNum;
-    int m_randomNum;
+    int m_shotRefeatNum;
+    int m_currentRefeatNum;
 
     public BossPattern3()
     {
         m_coolTime = 20;
-        m_shotCoolTime = 0;
-        m_bulletNum = 30;
+        m_shotCoolTime = 2;
+        m_bulletNum = 36;
+        m_shotRefeatNum = 3;
     }
 
     public override void ExcuteAttack()
     {
         if (m_canAttack == false) return;
-
         CanAttack = false;
-        m_currentBulletNum = 0;
+        
+        
         m_shotCoolTimeCounter = 0;
-        m_randomNum = Random.Range(-2, 2);
+        m_currentRefeatNum = 0;
 
         DetectTarget();
     }
@@ -177,7 +178,7 @@ public class BossPattern3 : BossPattern
     {
         base.WaitCoolTime();
 
-        if (m_currentBulletNum == m_bulletNum)
+        if (m_currentRefeatNum == m_shotRefeatNum)
         {
             return;
         }
@@ -186,27 +187,29 @@ public class BossPattern3 : BossPattern
         if (m_shotCoolTimeCounter > m_shotCoolTime)
         {
             m_shotCoolTimeCounter -= m_shotCoolTime;
-            m_currentBulletNum++;
-            ShotBullet(m_currentBulletNum);
+            m_currentRefeatNum++;
+            for (int i = 0; i < m_bulletNum; i++)
+            {
+                ShotBullet(i + m_currentRefeatNum * 0.5f);
+            }
         }
     }
 
     void DetectTarget()
     {
         m_bossTransform = GameObject.Find("Boss").transform;
-        m_playerTransform = GameObject.Find("Player").transform;
-
-        m_targetDir = (m_playerTransform.position - m_bossTransform.position).normalized;
     }
 
-    void ShotBullet(int _num)
+    void ShotBullet(float _num)
     {
-        Object prefab = Resources.Load("Prefabs/Monster/Bullet");
-        Bullet bullet = GameObject.Instantiate(prefab, m_bossTransform.position, m_bossTransform.rotation).GetComponent<Bullet>();
-
-        bullet.m_bulletDir = (m_targetDir + _num * Vector3.one * 2).normalized;
-        bullet.m_bulletDir = (m_targetDir - _num * Vector3.one * 2).normalized;
+        GameObject prefab = (GameObject)Resources.Load("Prefabs/Monster/Bullet");
+        Debug.Log(prefab);
+        GameObject go = Object.Instantiate(prefab, m_bossTransform.position, prefab.transform.rotation);
+        Debug.Log(go);
+        Bullet bullet = go.GetComponent<Bullet>();
 
         bullet.GetComponent<Transform>().localScale = Vector3.one;
+        bullet.m_bulletSpeed *= 1.5f;
+        bullet.m_bulletDir = Quaternion.AngleAxis(10 * _num, Vector3.forward) * Vector3.right;
     }
 }
