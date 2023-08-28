@@ -52,3 +52,6 @@ TagManager:
   - name: Creature
     uniqueID: 1968640955
     locked: 0
+  - name: Player
+    uniqueID: 3320056721
+    locked: 0

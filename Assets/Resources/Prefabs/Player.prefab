@@ -49,7 +49,7 @@ MonoBehaviour:
   m_dashStiffDelay: 0
   m_dashStiffTimeScale: 0.5
   m_bulletTimeScale: 0.05
-  m_smashBulletTimeDuration: 1.5
+  m_smashBulletTimeDuration: 2
 --- !u!212 &7287343155009920373
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -173,13 +173,13 @@ TrailRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -974910575
+  m_SortingLayer: 4
   m_SortingOrder: 9
   m_Time: 0.05
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.5
+    widthMultiplier: 1
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -253,7 +253,7 @@ GameObject:
   - component: {fileID: 3801871560442713544}
   - component: {fileID: 2985470912626061540}
   - component: {fileID: 1227127554435547839}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: DashIndicator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -313,8 +313,8 @@ LineRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -974910575
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_Positions:
   - {x: 0, y: 0, z: 0}
@@ -451,7 +451,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 1230
+    m_Bits: 1742
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 8400000, guid: 7661f469890b64846ad649b3819dbf74, type: 2}
   m_TargetDisplay: 0
@@ -545,8 +545,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -974910575
+  m_SortingLayer: 4
   m_SortingOrder: 10
   m_Sprite: {fileID: 7482667652216324306, guid: 48e93eef0688c4a259cb0eddcd8661f7, type: 3}
   m_Color: {r: 0.9490196, g: 0.8666667, b: 0.68235296, a: 1}
@@ -783,6 +783,10 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 3aff27e3-94fc-409e-8f7d-02ea98dc5abe
     m_ActionName: Player/New action
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: fd9e6e67-00c4-41f4-a7fe-83d291104549
+    m_ActionName: UI/Start[/XInputControllerWindows/start,/Keyboard/enter]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -806,10 +810,13 @@ MonoBehaviour:
   m_staminaRegen: 8
   m_staminaRegenOnGround: 200
   m_smashPower: 5
-  m_smashCooldown: 1
+  m_smashCooldown: 1.5
   m_attackableLayer:
     serializedVersion: 2
     m_Bits: 128
+  m_itemLayer:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!114 &7370753133849849871
 MonoBehaviour:
   m_ObjectHideFlags: 0

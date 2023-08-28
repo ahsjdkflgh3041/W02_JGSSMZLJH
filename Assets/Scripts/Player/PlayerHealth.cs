@@ -7,6 +7,7 @@ public class PlayerHealth : MonoBehaviour, IDamagable
 {
     public int Health { get; set; }
     public int MaxHealth { get { return maxHealth; } }
+    public bool IsAlive { get { return Health > 0; } }
 
     [SerializeField]
     private int maxHealth;

@@ -16,10 +16,12 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private float m_smashCooldown;
     [Header("Layer")]
     [SerializeField] private LayerMask m_attackableLayer;
+    [SerializeField] private LayerMask m_itemLayer;
 
     //private UIManager uiManager;
     private PlayerController m_player;
     private PlayerGround m_ground;
+    private PlayerHealth m_health;
     private PlayerRayProjector m_rayProjector;
     private TimeController m_timeController;
 
@@ -37,6 +39,7 @@ public class PlayerAttack : MonoBehaviour
         // uiManager = FindObjectOfType<UIManager>();
         m_player = GetComponent<PlayerController>();
         m_ground = GetComponent<PlayerGround>();
+        m_health = GetComponent<PlayerHealth>();
         m_rayProjector = GetComponent<PlayerRayProjector>();
         m_timeController = FindObjectOfType<TimeController>();
 
@@ -80,23 +83,35 @@ public class PlayerAttack : MonoBehaviour
     public void Smash(Vector2 start, Vector2 end)
     {
         m_currentSmashCooldown = m_smashCooldown;
-        bool hasAttacked = PerformAttack(start, end, m_smashPower);
-        if (hasAttacked && CanDash)
+        int attackedNum = PerformAttack(start, end, m_smashPower);
+        if (attackedNum > 0)
         {
+            m_currentStamina += m_staminaPerDash;
+            if (m_currentStamina > m_maxStamina)
+            {
+                m_currentStamina = m_maxStamina;
+            }
             m_timeController.StartBulletTime();
-            m_timeController.EndBulletTime(hasAttacked);
+            m_timeController.EndBulletTime(attackedNum);
         }
     }
 
-    bool PerformAttack(Vector2 start, Vector2 end, int damage)
+    int PerformAttack(Vector2 start, Vector2 end, int damage)
     {
+        m_rayProjector.SelectTransforms(start, end, m_itemLayer).Select(i => i.GetComponent<ItemBase>()).ToList().ForEach(i => i.OnUse(m_health));
+        //if (items.Count > 0)
+        //{
+        //    items;
+        //}
+
         var attackables = m_rayProjector.SelectTransforms(start, end, m_attackableLayer).Select(a => a.GetComponent<IDamagable>()).ToList();
         var damages = InflictDamages(attackables, damage);
         if (damages.Count > 0)
         {
             m_timeController.ApplyDashStiff(damages);
         }
-        return damages.Count > 0;
+        return damages.Count;
+
     }
 
     List<int> InflictDamages(List<IDamagable> targets, int damage)

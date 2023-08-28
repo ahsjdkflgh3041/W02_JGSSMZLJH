@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     Rigidbody2D m_rigidBody;
     BoxCollider2D m_boxCollider;
     PlayerGround m_ground;
+    PlayerHealth m_health;
     PlayerAttack m_attack;
     PlayerInput m_input;
     PlayerRayProjector m_rayProjector;
@@ -102,6 +103,7 @@ public class PlayerController : MonoBehaviour
         m_rigidBody = GetComponent<Rigidbody2D>();
         m_boxCollider = GetComponent<BoxCollider2D>();
         m_ground = GetComponent<PlayerGround>();
+        m_health = GetComponent<PlayerHealth>();
         m_attack = GetComponent<PlayerAttack>();
         m_input = GetComponent<PlayerInput>();
         m_rayProjector = GetComponent<PlayerRayProjector>();
@@ -196,6 +198,15 @@ public class PlayerController : MonoBehaviour
             m_dashDirection = (mousePosition - (Vector2)transform.position).normalized;
         }
 
+        if (!m_health.IsAlive) { return; }
+
+        m_onGround = m_ground.GetOnGround();
+        m_onRightWall = m_ground.GetOnRightWall();
+        m_onLeftWall = m_ground.GetOnLeftWall();
+        m_onWall = m_ground.GetOnWall();
+
+        CompensateDirection();
+
         m_gravityCoefficient = (-2 * m_jumpHeight) / (m_jumpTimeToApex * m_jumpTimeToApex * Physics2D.gravity.y);
         m_rigidBody.gravityScale = m_gravityMultiplier * m_gravityCoefficient;
 
@@ -213,10 +224,6 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        m_onGround = m_ground.GetOnGround();
-        m_onRightWall = m_ground.GetOnRightWall();
-        m_onLeftWall = m_ground.GetOnLeftWall();
-        m_onWall = m_ground.GetOnWall();
 
         if (m_hasPerformedWallJump && (!m_jumpInput || m_onGround || !m_canJumpOrDash))
         {
@@ -232,13 +239,17 @@ public class PlayerController : MonoBehaviour
         if (m_wasOnWall && !m_onWall)
         {
             m_wasOnWall = false;
-            m_canCoyoteWall = true;
             if (!m_onGround)
             {
+                m_canCoyoteWall = true;
                 m_canJumpAgain = true;
             }
         }
 
+        if (m_onGround && m_canCoyoteWall)
+        {
+            m_canCoyoteWall = false;
+        }
         if (m_onGround || m_onWall)
         {
             m_canJumpAgain = false;
@@ -246,14 +257,38 @@ public class PlayerController : MonoBehaviour
         }
         else if (!m_onGround && !m_onWall)
         {
-            m_coyoteTimeCounter += Time.deltaTime;
+            if (m_coyoteTimeCounter >= 0)
+            {
+                m_coyoteTimeCounter += Time.deltaTime;
+            }
         }
         //Debug.Log($"CoyoteTimeCounter : {m_coyoteTimeCounter}");
         m_desiredVelocityX = (m_directionX == 0 ? 0 : Mathf.Sign(m_directionX)) * m_speedX;
     }
 
+    void CompensateDirection()
+    {
+        var cirteriaDegree = k_inputCriteriaDegree;
+        if (
+            (m_ground.OnGroundRight && m_dashDirection.x > 0) || (m_ground.OnGroundLeft && m_dashDirection.x < 0)
+            && m_dashDirection.y < 0 && Vector2.Angle(Vector2.down, m_dashDirection) > cirteriaDegree
+            )
+        {
+            m_dashDirection = (new Vector2(m_dashDirection.x, 0)).normalized;
+        }
+        else if (
+            (((m_ground.OnRightWallUp && m_dashDirection.y > 0) || (m_ground.OnRightWallDown && m_dashDirection.y < 0)) && m_dashDirection.x > 0 && Vector2.Angle(Vector2.right, m_dashDirection) > cirteriaDegree)
+            || (((m_ground.OnLeftWallUp && m_dashDirection.y > 0) || (m_ground.OnLeftWallDown && m_dashDirection.y < 0)) && m_dashDirection.x < 0 && Vector2.Angle(Vector2.left, m_dashDirection) > cirteriaDegree)
+                )
+        {
+            m_dashDirection = (new Vector2(0, m_dashDirection.y)).normalized;
+        }
+    }
+
     private void FixedUpdate()
     {
+        if (!m_health.IsAlive) { return; }
+
         m_hasJumpedThisFrame = false;
 
         m_velocity = m_rigidBody.velocity;
@@ -419,7 +454,7 @@ public class PlayerController : MonoBehaviour
         {
             m_desiredJump = false;
             m_jumpBufferCounter = 0;
-            m_coyoteTimeCounter = 0;
+            m_coyoteTimeCounter = -1;
             m_canJumpAgain = m_enableDoubleJump && m_canJumpAgain == false;
 
             float jumpSpeed = m_gravityMultiplier == 0 ?
@@ -436,9 +471,10 @@ public class PlayerController : MonoBehaviour
                 {
                     m_canCoyoteWall = false;
                     direction = m_coyoteWallDirection;
+                    m_coyoteWallDirection = 0;
                     m_canJumpAgain = true;
                 }
-                m_velocity.x = m_speedX * direction * m_wallJumpXModifier;
+                m_velocity.x = (m_speedX * direction + m_desiredVelocityX) * m_wallJumpXModifier;
                 m_velocity.y = jumpSpeed;
                 m_hasPerformedWallJump = true;
             }

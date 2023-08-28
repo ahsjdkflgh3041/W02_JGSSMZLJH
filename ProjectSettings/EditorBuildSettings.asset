@@ -5,11 +5,17 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/Scenes/SampleScene.unity
-    guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 1
-    path: Assets/Scenes/GS test/temp_PlayerControl 1.unity
-    guid: 105b81b6cf4dc3245a5bdf0e4efc65d4
+    path: Assets/Scenes/Stage/Intro.unity
+    guid: 2b05ebdca5abb4c4aa8677b6171bcd63
+  - enabled: 1
+    path: Assets/Scenes/Stage/Stage1_Fix.unity
+    guid: fdc90d7f2eadc7943b6fc5a219c5009a
+  - enabled: 1
+    path: Assets/Scenes/Stage/Stage2.unity
+    guid: 47c6e0cc48721b248bf79f5097cd397e
+  - enabled: 1
+    path: Assets/Scenes/Stage/Ending.unity
+    guid: 31663ac47a50a7a4fb8c3bcb474caad0
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: cb01230b58a5c5445964213b49a898d3, type: 2}
