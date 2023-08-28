@@ -11,3 +11,8 @@ public enum ItemType
 { 
     Heart, SavePoint,
 }
+
+public enum SceneType
+{ 
+    UnKnown, Start, Game, Clear,
+}
