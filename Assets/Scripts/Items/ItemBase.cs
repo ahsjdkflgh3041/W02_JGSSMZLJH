@@ -34,4 +34,9 @@ public class ItemBase : MonoBehaviour
             m_rigidbody2D.bodyType = RigidbodyType2D.Dynamic;
         }
     }
+
+    public virtual void OnUse(PlayerHealth player)
+    {
+
+    }
 }

@@ -25,7 +25,7 @@ public class TimeController : MonoBehaviour
         m_spriteRenderer = GetComponent<SpriteRenderer>();
         m_defaultColor = m_spriteRenderer.color;
 
-        m_defalutTimeScale = Time.timeScale;
+        m_defalutTimeScale = 1;
         m_currentTimeScale = m_defalutTimeScale;
     }
 
