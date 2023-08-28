@@ -196,6 +196,13 @@ public class PlayerController : MonoBehaviour
             m_dashDirection = (mousePosition - (Vector2)transform.position).normalized;
         }
 
+        m_onGround = m_ground.GetOnGround();
+        m_onRightWall = m_ground.GetOnRightWall();
+        m_onLeftWall = m_ground.GetOnLeftWall();
+        m_onWall = m_ground.GetOnWall();
+
+        CompensateDirection();
+
         m_gravityCoefficient = (-2 * m_jumpHeight) / (m_jumpTimeToApex * m_jumpTimeToApex * Physics2D.gravity.y);
         m_rigidBody.gravityScale = m_gravityMultiplier * m_gravityCoefficient;
 
@@ -213,10 +220,6 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        m_onGround = m_ground.GetOnGround();
-        m_onRightWall = m_ground.GetOnRightWall();
-        m_onLeftWall = m_ground.GetOnLeftWall();
-        m_onWall = m_ground.GetOnWall();
 
         if (m_hasPerformedWallJump && (!m_jumpInput || m_onGround || !m_canJumpOrDash))
         {
@@ -257,6 +260,20 @@ public class PlayerController : MonoBehaviour
         }
         //Debug.Log($"CoyoteTimeCounter : {m_coyoteTimeCounter}");
         m_desiredVelocityX = (m_directionX == 0 ? 0 : Mathf.Sign(m_directionX)) * m_speedX;
+    }
+
+    void CompensateDirection()
+    {
+        var cirteriaDegree = k_inputCriteriaDegree;
+        if (m_onGround && m_dashDirection.y < 0 && Vector2.Angle(Vector2.down, m_dashDirection) > cirteriaDegree)
+        {
+            m_dashDirection = (new Vector2(m_dashDirection.x, 0)).normalized;
+        }
+        else if ((m_onRightWall && m_dashDirection.x > 0 && Vector2.Angle(Vector2.right, m_dashDirection) > cirteriaDegree)
+            || (m_onLeftWall && m_dashDirection.x < 0 && Vector2.Angle(Vector2.left, m_dashDirection) > cirteriaDegree))
+        {
+            m_dashDirection = (new Vector2(0, m_dashDirection.y)).normalized;
+        }
     }
 
     private void FixedUpdate()
