@@ -163,6 +163,7 @@ GameObject:
   - component: {fileID: 7370753133849849870}
   - component: {fileID: 7370753133849849871}
   - component: {fileID: 7370753133849849868}
+  - component: {fileID: 4703249497115850255}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -282,18 +283,18 @@ MonoBehaviour:
   m_defaultGravity: 1
   m_maxFallSpeed: 100
   m_wallJumpXModifier: 1.5
-  m_wallJumpCoyoteTime: 0.2
-  m_dashDistance: 5
+  m_dashDistance: 7
   m_dashPreDelay: 0.05
   m_dashGravity: 1.75
   m_dashPostDelay: 0.25
-  m_smashDistance: 10
+  m_smashDistance: 12
   m_smashPreDelay: 0.05
   m_smashGravity: 1.75
   m_smashPostDelay: 0.25
   m_smashBulletTimeSlower: 0.05
   m_jumpBuffer: 0.2
   m_smashCriterionTime: 0.2
+  m_ignoreRayResult: 1
   m_dashDirection: {x: 1, y: 1}
 --- !u!114 &7370753133849849863
 MonoBehaviour:
@@ -479,13 +480,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acdb123293f741f4a86a9e56909df598, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_dashPower: 1
+  m_dashPower: 2
   m_maxStamina: 50
   m_staminaPerDash: 10
   m_staminaRegen: 8
   m_staminaRegenOnGround: 200
-  m_smashPower: 3
-  m_smashCooldown: 5
+  m_smashPower: 5
+  m_smashCooldown: 1
   m_attackableLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -501,7 +502,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67934a6990722794d8c97f955fb2a1f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 5
+  maxHealth: 10
 --- !u!61 &7370753133849849868
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -528,3 +529,15 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &4703249497115850255
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7370753133849849862}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d20d58b6cbfb954d95ab076fce9e3ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
