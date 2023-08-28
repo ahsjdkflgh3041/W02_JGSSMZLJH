@@ -11,6 +11,7 @@ public class TimeController : MonoBehaviour
     [SerializeField] private float m_dashStiffTimeScale;
     [SerializeField] private float m_bulletTimeScale = 0.05f;
     [SerializeField] private float m_smashBulletTimeDuration;
+    [SerializeField] private float m_additionalBulletTimePerTarget = 0.25f;
 
     private float m_defalutTimeScale;
     private float m_currentTimeScale;
@@ -40,11 +41,11 @@ public class TimeController : MonoBehaviour
         }
     }
 
-    public void EndBulletTime(bool hasDelay = false)
+    public void EndBulletTime(int attackedNum = 0)
     {
-        if (hasDelay)
+        if (attackedNum > 0)
         {
-            StartCoroutine(EndBulletTimeAfterDelay(m_smashBulletTimeDuration));
+            StartCoroutine(EndBulletTimeAfterDelay(m_smashBulletTimeDuration + attackedNum * m_additionalBulletTimePerTarget));
         }
         else
         {
@@ -53,7 +54,9 @@ public class TimeController : MonoBehaviour
     }
     IEnumerator EndBulletTimeAfterDelay(float delay)
     {
+        Debug.Log($"Coroutine with {delay} seconds started. : {Time.realtimeSinceStartup}");
         yield return new WaitForSecondsRealtime(delay);
+        Debug.Log($"Bullet time ended. : {Time.realtimeSinceStartup}");
         ExecuteEndBulletTime();
     }
     void ExecuteEndBulletTime()

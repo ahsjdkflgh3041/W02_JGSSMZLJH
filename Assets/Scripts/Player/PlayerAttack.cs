@@ -83,15 +83,15 @@ public class PlayerAttack : MonoBehaviour
     public void Smash(Vector2 start, Vector2 end)
     {
         m_currentSmashCooldown = m_smashCooldown;
-        bool hasAttacked = PerformAttack(start, end, m_smashPower);
-        if (hasAttacked && CanDash)
+        int attackedNum = PerformAttack(start, end, m_smashPower);
+        if (attackedNum > 0 && CanDash)
         {
             m_timeController.StartBulletTime();
-            m_timeController.EndBulletTime(hasAttacked);
+            m_timeController.EndBulletTime(attackedNum);
         }
     }
 
-    bool PerformAttack(Vector2 start, Vector2 end, int damage)
+    int PerformAttack(Vector2 start, Vector2 end, int damage)
     {
         m_rayProjector.SelectTransforms(start, end, m_itemLayer).Select(i => i.GetComponent<ItemBase>()).ToList().ForEach(i => i.OnUse(m_health));
         //if (items.Count > 0)
@@ -105,7 +105,7 @@ public class PlayerAttack : MonoBehaviour
         {
             m_timeController.ApplyDashStiff(damages);
         }
-        return damages.Count > 0;
+        return damages.Count;
 
     }
 
