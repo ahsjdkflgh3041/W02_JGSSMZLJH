@@ -246,7 +246,10 @@ public class PlayerController : MonoBehaviour
         }
         else if (!m_onGround && !m_onWall)
         {
-            m_coyoteTimeCounter += Time.deltaTime;
+            if (m_coyoteTimeCounter >= 0)
+            {
+                m_coyoteTimeCounter += Time.deltaTime;
+            }
         }
         //Debug.Log($"CoyoteTimeCounter : {m_coyoteTimeCounter}");
         m_desiredVelocityX = (m_directionX == 0 ? 0 : Mathf.Sign(m_directionX)) * m_speedX;
@@ -419,7 +422,7 @@ public class PlayerController : MonoBehaviour
         {
             m_desiredJump = false;
             m_jumpBufferCounter = 0;
-            m_coyoteTimeCounter = 0;
+            m_coyoteTimeCounter = -1;
             m_canJumpAgain = m_enableDoubleJump && m_canJumpAgain == false;
 
             float jumpSpeed = m_gravityMultiplier == 0 ?
