@@ -84,8 +84,13 @@ public class PlayerAttack : MonoBehaviour
     {
         m_currentSmashCooldown = m_smashCooldown;
         int attackedNum = PerformAttack(start, end, m_smashPower);
-        if (attackedNum > 0 && CanDash)
+        if (attackedNum > 0)
         {
+            m_currentStamina += m_staminaPerDash;
+            if (m_currentStamina > m_maxStamina)
+            {
+                m_currentStamina = m_maxStamina;
+            }
             m_timeController.StartBulletTime();
             m_timeController.EndBulletTime(attackedNum);
         }
