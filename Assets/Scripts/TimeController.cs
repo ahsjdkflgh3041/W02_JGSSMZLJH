@@ -68,10 +68,10 @@ public class TimeController : MonoBehaviour
         foreach (var damage in damamges)
         {
             Time.timeScale = m_dashStiffTimeScale;
-            yield return new WaitForSecondsRealtime(damage * m_dashStiffPerDamage);
+            yield return new WaitForSecondsRealtime(damage * m_dashStiffPerDamage * (m_onBulletTime ? 0 : 1));
             Debug.Log($"stiff : {damage} * {m_dashStiffPerDamage}");
             Time.timeScale = m_currentTimeScale;
-            yield return new WaitForSecondsRealtime(m_dashStiffDelay);
+            yield return new WaitForSecondsRealtime(m_dashStiffDelay * (m_onBulletTime ? 0 : 1));
 
         }
     }
