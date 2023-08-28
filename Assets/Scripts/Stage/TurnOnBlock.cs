@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TurnOnBlock : MonoBehaviour
 {
-    private bool isPlayerEnter = false;
+    private bool m_isPlayerEnter = false;
 
     private bool m_isEnemyAllDie = false;
 
@@ -14,15 +14,10 @@ public class TurnOnBlock : MonoBehaviour
 
     [SerializeField] private GameObject m_entryDoor;
 
-    private void Start()
-    {
-        
-    }
-
     // Update is called once per frame
     void Update()
     {
-        if(isPlayerEnter && !m_isEnemyAllDie)
+        if (m_isPlayerEnter && !m_isEnemyAllDie)
         {
             CountEnemy();
         }
@@ -36,18 +31,34 @@ public class TurnOnBlock : MonoBehaviour
     private void CountEnemy()
     {
         m_enemyCount = m_monsterParent.GetComponentsInChildren<MonsterHealth>().Length;
-        //Debug.Log($"Enemy Count : {m_enemyCount}");
-        if (m_enemyCount == 0) { m_isEnemyAllDie=true; }        
+
+        if (m_enemyCount == 0) { m_isEnemyAllDie = true; }
+
+        
+        UIManager.Instance.UpdateUIEnemy(m_enemyCount);
+
+        if (m_enemyCount == 0) 
+        { 
+            m_isEnemyAllDie = true;
+            UIManager.Instance.UpdateUIEnemyFirst(m_enemyCount, false);
+        }        
+
     }
 
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.gameObject.CompareTag("Player") && !m_isEnemyAllDie)
+        if (collision.gameObject.CompareTag("Player") && !m_isEnemyAllDie)
         {
-            isPlayerEnter = true;
+            Debug.Log("LevelTriggerOn");
+            m_isPlayerEnter = true;
             m_monsterParent.SetActive(true);
             m_entryDoor.SetActive(true);
+            Collider2D collider2D = gameObject.GetComponent<Collider2D>();
+            collider2D.enabled = false;
+
+            m_enemyCount = m_monsterParent.GetComponentsInChildren<MonsterHealth>().Length;
+            UIManager.Instance.UpdateUIEnemyFirst(m_enemyCount, m_isPlayerEnter);
             CountEnemy();
         }
     }
