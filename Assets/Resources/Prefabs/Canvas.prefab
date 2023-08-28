@@ -273,8 +273,8 @@ MonoBehaviour:
   m_hpBarImg: {fileID: 1498504087701309121}
   m_staminaBarImg: {fileID: 1498504088235253128}
   m_smashCoolDownImg: {fileID: 1498504088617171718}
-  m_enemyInfo: {fileID: 0}
-  m_enemyText: {fileID: 0}
+  m_enemyInfo: {fileID: 7129958080238809600}
+  m_enemyText: {fileID: 8743980681586271818}
   MaxHPUI: 0
   MaxEnemy: 0
   MaxStaminaUI: 0
