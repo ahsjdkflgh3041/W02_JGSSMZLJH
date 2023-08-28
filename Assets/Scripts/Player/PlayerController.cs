@@ -334,11 +334,12 @@ public class PlayerController : MonoBehaviour
     }
     private void PerformDash()
     {
+        m_velocity = Vector2.zero;
         float dashTime = Time.realtimeSinceStartup - m_dashStartTime;
 
         if (dashTime <= m_dashPreDelay)
         {
-            m_velocity = Vector2.zero;
+
         }
         //else if (dashTime <= m_dashPreDelay + m_dashTime)
         //{
@@ -363,7 +364,7 @@ public class PlayerController : MonoBehaviour
 
             if (!m_isJumping)
             {
-                m_velocity = Vector2.zero;
+                m_velocity.y = -m_dashGravity;
             }
         }
         else
@@ -373,11 +374,12 @@ public class PlayerController : MonoBehaviour
     }
     private void PerformSmash()
     {
+        m_velocity = Vector2.zero;
         float smashTime = Time.realtimeSinceStartup - m_smashStartTime;
 
         if (smashTime <= m_smashPreDelay)
         {
-            m_velocity = Vector2.zero;
+
         }
         //else if (smashTime <= m_smashPreDelay + m_smashTime)
         //{
@@ -402,13 +404,11 @@ public class PlayerController : MonoBehaviour
 
             if (!m_isJumping)
             {
-                m_velocity = Vector2.zero;
+                m_velocity.y = -m_smashGravity;
             }
         }
         else
         {
-            var displacement = (Vector2)transform.position - m_dashStartPosition;
-            //Debug.Log($"Dash Displacement : {displacement} = {displacement.magnitude}");
             m_isSmashing = false;
         }
     }
@@ -422,7 +422,7 @@ public class PlayerController : MonoBehaviour
             m_coyoteTimeCounter = 0;
             m_canJumpAgain = m_enableDoubleJump && m_canJumpAgain == false;
 
-            float jumpSpeed = m_onWall ?
+            float jumpSpeed = m_gravityMultiplier == 0 ?
                 Mathf.Sqrt(-2f * Physics2D.gravity.y * m_defaultGravity * m_gravityCoefficient * m_jumpHeight / m_defaultGravity)
                 : Mathf.Sqrt(-2f * Physics2D.gravity.y * m_rigidBody.gravityScale * m_jumpHeight / m_gravityMultiplier);
 
@@ -499,21 +499,25 @@ public class PlayerController : MonoBehaviour
     {
         if (m_hasJumpedThisFrame) { return; }
 
-        if (m_isDashing)
+        //if (m_isDashing)
+        //{
+        //    if (!m_isJumping)
+        //    {
+        //        m_gravityMultiplier = m_dashGravity * k_defalutFixedTimestep / Time.fixedDeltaTime;
+        //        return;
+        //    }
+        //    else
+        //    {
+        //    }
+        //}
+        //else if (m_isSmashing && !m_isJumping)
+        //{
+        //    m_gravityMultiplier = m_smashGravity * k_defalutFixedTimestep / Time.fixedDeltaTime;
+        //    return;
+        //}
+        if (!m_isJumping && (m_isDashing || m_isSmashing))
         {
-            if (!m_isJumping)
-            {
-                m_gravityMultiplier = m_dashGravity * k_defalutFixedTimestep / Time.fixedDeltaTime;
-                return;
-            }
-            else
-            {
-            }
-        }
-        else if (m_isSmashing && !m_isJumping)
-        {
-            m_gravityMultiplier = m_smashGravity * k_defalutFixedTimestep / Time.fixedDeltaTime;
-            return;
+            m_gravityMultiplier = 0;
         }
 
         if (OnBulletTime)
