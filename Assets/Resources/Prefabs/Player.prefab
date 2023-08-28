@@ -810,6 +810,9 @@ MonoBehaviour:
   m_attackableLayer:
     serializedVersion: 2
     m_Bits: 128
+  m_itemLayer:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!114 &7370753133849849871
 MonoBehaviour:
   m_ObjectHideFlags: 0

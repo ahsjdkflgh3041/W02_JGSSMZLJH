@@ -18,12 +18,16 @@ public class Heart : ItemBase
         if (collision.gameObject.CompareTag("Player"))
         {
             PlayerHealth playerHealth = collision.GetComponent<PlayerHealth>();
+            OnUse(playerHealth);
+        }
+    }
 
-            if (playerHealth != null && playerHealth.Health < playerHealth.MaxHealth)
-            {
-                playerHealth.TakeHealing(m_healingPower);
-                Destroy(gameObject);
-            } 
+    public override void OnUse(PlayerHealth playerHealth)
+    {
+        if (playerHealth != null && playerHealth.Health < playerHealth.MaxHealth)
+        {
+            playerHealth.TakeHealing(m_healingPower);
+            Destroy(gameObject);
         }
     }
 }
