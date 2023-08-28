@@ -179,7 +179,7 @@ TrailRenderer:
   m_Time: 0.05
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.5
+    widthMultiplier: 1
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -253,7 +253,7 @@ GameObject:
   - component: {fileID: 3801871560442713544}
   - component: {fileID: 2985470912626061540}
   - component: {fileID: 1227127554435547839}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: DashIndicator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -451,7 +451,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 1230
+    m_Bits: 1742
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 8400000, guid: 7661f469890b64846ad649b3819dbf74, type: 2}
   m_TargetDisplay: 0
