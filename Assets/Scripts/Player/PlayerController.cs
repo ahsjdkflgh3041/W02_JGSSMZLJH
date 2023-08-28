@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     Rigidbody2D m_rigidBody;
     BoxCollider2D m_boxCollider;
     PlayerGround m_ground;
+    PlayerHealth m_health;
     PlayerAttack m_attack;
     PlayerInput m_input;
     PlayerRayProjector m_rayProjector;
@@ -102,6 +103,7 @@ public class PlayerController : MonoBehaviour
         m_rigidBody = GetComponent<Rigidbody2D>();
         m_boxCollider = GetComponent<BoxCollider2D>();
         m_ground = GetComponent<PlayerGround>();
+        m_health = GetComponent<PlayerHealth>();
         m_attack = GetComponent<PlayerAttack>();
         m_input = GetComponent<PlayerInput>();
         m_rayProjector = GetComponent<PlayerRayProjector>();
@@ -196,6 +198,8 @@ public class PlayerController : MonoBehaviour
             m_dashDirection = (mousePosition - (Vector2)transform.position).normalized;
         }
 
+        if (!m_health.IsAlive) { return; }
+
         m_onGround = m_ground.GetOnGround();
         m_onRightWall = m_ground.GetOnRightWall();
         m_onLeftWall = m_ground.GetOnLeftWall();
@@ -278,6 +282,8 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!m_health.IsAlive) { return; }
+
         m_hasJumpedThisFrame = false;
 
         m_velocity = m_rigidBody.velocity;
