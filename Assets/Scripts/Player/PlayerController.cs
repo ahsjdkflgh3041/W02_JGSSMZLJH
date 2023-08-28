@@ -463,7 +463,7 @@ public class PlayerController : MonoBehaviour
                     m_coyoteWallDirection = 0;
                     m_canJumpAgain = true;
                 }
-                m_velocity.x = m_speedX * direction * m_wallJumpXModifier;
+                m_velocity.x = (m_speedX * direction + m_desiredVelocityX) * m_wallJumpXModifier;
                 m_velocity.y = jumpSpeed;
                 m_hasPerformedWallJump = true;
             }
