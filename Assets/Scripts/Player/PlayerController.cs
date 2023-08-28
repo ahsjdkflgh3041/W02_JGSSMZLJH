@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
     const string k_keyboardAndMouseString = "Keyboard&Mouse";
     const float k_almosZero = 0.001f;
     const float k_defalutFixedTimestep = 0.02f;
+    const float k_inputCriteriaDegree = 30f;
 
     Rigidbody2D m_rigidBody;
     BoxCollider2D m_boxCollider;
@@ -49,6 +50,7 @@ public class PlayerController : MonoBehaviour
 
     private Vector2 m_velocity;
     private float m_directionX;
+    private float m_directionY;
     private float m_desiredVelocityX;
     private float m_gravityCoefficient;
     private bool m_desiredJump;
@@ -108,6 +110,11 @@ public class PlayerController : MonoBehaviour
     {
         var inputVector = context.ReadValue<Vector2>();
         m_directionX = inputVector.x;
+
+        var yDegree = Mathf.Asin(inputVector.y) * Mathf.Rad2Deg;
+        if (yDegree >= k_inputCriteriaDegree) { m_directionY = 1; }
+        else if (yDegree <= -k_inputCriteriaDegree) { m_directionY = -1; }
+        else { m_directionY = 0; }
     }
 
     public void OnJump(InputAction.CallbackContext context)
@@ -284,9 +291,14 @@ public class PlayerController : MonoBehaviour
             {
                 return;
             }
-            if ( (m_onRightWall && m_desiredVelocityX > 0) || (m_onLeftWall && m_desiredVelocityX < 0))
+
+            if (m_directionY > 0)
             {
                 m_velocity.y = m_speedY;
+            }
+            else if (m_directionY == 0 && ((m_onRightWall && m_desiredVelocityX > 0) || (m_onLeftWall && m_desiredVelocityX < 0)))
+            {
+                m_velocity.y = 0;
             }
             else
             {
