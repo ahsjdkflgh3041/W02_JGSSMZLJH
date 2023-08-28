@@ -19,11 +19,19 @@ public class ItemBase : MonoBehaviour
 
     protected void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Ground"))
+        if (collision.gameObject.CompareTag("Ground") == true)
         {
             m_collider2D.isTrigger = true;
-            //m_rigidbody2D.bodyType = RigidbodyType2D.Kinematic;
-            m_rigidbody2D.gravityScale = 0f;
+            m_rigidbody2D.bodyType = RigidbodyType2D.Kinematic;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Ground") == true)
+        {
+            m_collider2D.isTrigger = false;
+            m_rigidbody2D.bodyType = RigidbodyType2D.Dynamic;
         }
     }
 }
