@@ -204,8 +204,8 @@ public class BossPattern3 : BossPattern
         Object prefab = Resources.Load("Prefabs/Monster/Bullet");
         Bullet bullet = GameObject.Instantiate(prefab, m_bossTransform.position, m_bossTransform.rotation).GetComponent<Bullet>();
 
-        bullet.m_bulletDir = (m_targetDir + _num * Vector3.one).normalized;
-        bullet.m_bulletDir = (m_targetDir - _num * Vector3.one).normalized;
+        bullet.m_bulletDir = (m_targetDir + _num * Vector3.one * 2).normalized;
+        bullet.m_bulletDir = (m_targetDir - _num * Vector3.one * 2).normalized;
 
         bullet.GetComponent<Transform>().localScale = Vector3.one;
     }
