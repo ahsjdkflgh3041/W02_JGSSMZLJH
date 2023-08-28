@@ -30,7 +30,7 @@ public class TurnOnBlock : MonoBehaviour
 
     private void CountEnemy()
     {
-        m_enemyCount = m_monsterParent.GetComponentsInChildren<MonsterHealth>().Length;
+        m_enemyCount = m_monsterParent.GetComponentsInChildren<MonsterMove>().Length;
 
         if (m_enemyCount == 0) { m_isEnemyAllDie = true; }
 
@@ -57,7 +57,7 @@ public class TurnOnBlock : MonoBehaviour
             Collider2D collider2D = gameObject.GetComponent<Collider2D>();
             collider2D.enabled = false;
 
-            m_enemyCount = m_monsterParent.GetComponentsInChildren<MonsterHealth>().Length;
+            m_enemyCount = m_monsterParent.GetComponentsInChildren<MonsterMove>().Length;
             UIManager.Instance.UpdateUIEnemyFirst(m_enemyCount, m_isPlayerEnter);
             CountEnemy();
         }
