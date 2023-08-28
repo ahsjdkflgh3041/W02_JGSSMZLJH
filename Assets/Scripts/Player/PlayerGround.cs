@@ -8,6 +8,14 @@ public class PlayerGround : MonoBehaviour
     bool m_onRightWall;
     bool m_onLeftWall;
 
+    public bool OnGroundRight { get; private set; }
+    public bool OnGroundLeft { get; private set; }
+    public bool OnRightWallUp { get; private set; }
+    public bool OnRightWallDown { get; private set; }
+    public bool OnLeftWallUp { get; private set; }
+    public bool OnLeftWallDown { get; private set; }
+
+
     [Header("Ground Collider Settings")]
     [SerializeField] [Tooltip("Length of the ground-checking collider")] private float m_groundLength = 0.95f;
     [SerializeField] [Tooltip("Distance between the ground-checking colliders")] private Vector3 m_groundOffset;
@@ -20,17 +28,17 @@ public class PlayerGround : MonoBehaviour
 
     private void Update()
     {
-        m_onGround =
-            Physics2D.Raycast(transform.position + m_groundOffset, Vector2.down, m_groundLength, m_groundLayer) 
-            || Physics2D.Raycast(transform.position - m_groundOffset, Vector2.down, m_groundLength, m_groundLayer);
+        OnGroundRight = Physics2D.Raycast(transform.position + m_groundOffset, Vector2.down, m_groundLength, m_groundLayer);
+        OnGroundLeft = Physics2D.Raycast(transform.position - m_groundOffset, Vector2.down, m_groundLength, m_groundLayer);
+        m_onGround = OnGroundRight || OnGroundLeft;
 
-        m_onRightWall =
-            Physics2D.Raycast(transform.position + m_wallOffset, Vector2.right, m_wallLength, m_wallLayer)
-            || Physics2D.Raycast(transform.position - m_wallOffset, Vector2.right, m_wallLength, m_wallLayer);
+        OnRightWallUp = Physics2D.Raycast(transform.position + m_wallOffset, Vector2.right, m_wallLength, m_wallLayer);
+        OnRightWallDown = Physics2D.Raycast(transform.position - m_wallOffset, Vector2.right, m_wallLength, m_wallLayer);
+        m_onRightWall = OnRightWallUp || OnRightWallDown;
 
-        m_onLeftWall =
-            Physics2D.Raycast(transform.position + m_wallOffset, Vector2.left, m_wallLength, m_wallLayer)
-            || Physics2D.Raycast(transform.position - m_wallOffset, Vector2.left, m_wallLength, m_wallLayer);
+        OnLeftWallUp = Physics2D.Raycast(transform.position + m_wallOffset, Vector2.left, m_wallLength, m_wallLayer);
+        OnLeftWallDown = Physics2D.Raycast(transform.position - m_wallOffset, Vector2.left, m_wallLength, m_wallLayer);
+        m_onLeftWall = OnLeftWallUp || OnLeftWallDown;
     }
 
     private void OnDrawGizmos()

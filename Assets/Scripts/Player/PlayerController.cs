@@ -269,12 +269,17 @@ public class PlayerController : MonoBehaviour
     void CompensateDirection()
     {
         var cirteriaDegree = k_inputCriteriaDegree;
-        if (m_onGround && m_dashDirection.y < 0 && Vector2.Angle(Vector2.down, m_dashDirection) > cirteriaDegree)
+        if (
+            (m_ground.OnGroundRight && m_dashDirection.x > 0) || (m_ground.OnGroundLeft && m_dashDirection.x < 0)
+            && m_dashDirection.y < 0 && Vector2.Angle(Vector2.down, m_dashDirection) > cirteriaDegree
+            )
         {
             m_dashDirection = (new Vector2(m_dashDirection.x, 0)).normalized;
         }
-        else if ((m_onRightWall && m_dashDirection.x > 0 && Vector2.Angle(Vector2.right, m_dashDirection) > cirteriaDegree)
-            || (m_onLeftWall && m_dashDirection.x < 0 && Vector2.Angle(Vector2.left, m_dashDirection) > cirteriaDegree))
+        else if (
+            (((m_ground.OnRightWallUp && m_dashDirection.y > 0) || (m_ground.OnRightWallDown && m_dashDirection.y < 0)) && m_dashDirection.x > 0 && Vector2.Angle(Vector2.right, m_dashDirection) > cirteriaDegree)
+            || (((m_ground.OnLeftWallUp && m_dashDirection.y > 0) || (m_ground.OnLeftWallDown && m_dashDirection.y < 0)) && m_dashDirection.x < 0 && Vector2.Angle(Vector2.left, m_dashDirection) > cirteriaDegree)
+                )
         {
             m_dashDirection = (new Vector2(0, m_dashDirection.y)).normalized;
         }
