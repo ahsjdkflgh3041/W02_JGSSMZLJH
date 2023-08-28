@@ -73,10 +73,15 @@ public class PlayerAttack : MonoBehaviour
     public void Smash(Vector2 start, Vector2 end)
     {
         m_currentSmashCooldown = m_smashCooldown;
-        PerformAttack(start, end, m_smashPower);
+        bool hasAttacked = PerformAttack(start, end, m_smashPower);
+        if (hasAttacked)
+        {
+            m_timeController.StartBulletTime();
+            m_timeController.EndBulletTime(hasAttacked);
+        }
     }
 
-    void PerformAttack(Vector2 start, Vector2 end, int damage)
+    bool PerformAttack(Vector2 start, Vector2 end, int damage)
     {
         var attackables = m_rayProjector.SelectTransforms(start, end, m_attackableLayer).Select(a => a.GetComponent<IDamagable>()).ToList();
         var damages = InflictDamages(attackables, damage);
@@ -84,6 +89,7 @@ public class PlayerAttack : MonoBehaviour
         {
             m_timeController.ApplyDashStiff(damages);
         }
+        return damages.Count > 0;
     }
 
     List<int> InflictDamages(List<IDamagable> targets, int damage)
