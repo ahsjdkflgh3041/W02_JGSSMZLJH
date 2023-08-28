@@ -14,7 +14,7 @@ public class CameraController : MonoBehaviour
 
 
     Transform m_player;
-    PlayerController m_playerController;
+    TimeController m_timeController;
 
     Vector3 m_currentPos;
 
@@ -24,7 +24,7 @@ public class CameraController : MonoBehaviour
     private void Start()
     {
         m_player = GameObject.FindWithTag("Player").transform;
-        m_playerController = m_player.GetComponent<PlayerController>();
+        m_timeController = FindObjectOfType<TimeController>();
 
         m_currentPos = transform.position;
         m_originCameraSize = Camera.main.orthographicSize;
@@ -36,7 +36,7 @@ public class CameraController : MonoBehaviour
         m_currentPos = Vector3.Lerp(m_currentPos, m_player.position, Time.deltaTime * m_chaseSpeed);
         transform.position = m_currentPos + m_offset;
 
-        if (m_playerController.OnBulletTime == true)
+        if (m_timeController.OnBulletTime == true)
             Camera.main.orthographicSize = Mathf.Lerp(m_currentCameraSize, m_smashCameraSize, Time.deltaTime * m_smashSizeChangeSpeed);
         else
             Camera.main.orthographicSize = Mathf.Lerp(m_currentCameraSize, m_originCameraSize, Time.deltaTime * m_originSizeChangeSpeed);

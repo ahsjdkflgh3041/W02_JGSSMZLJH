@@ -9,11 +9,13 @@ public class DashIndicator : MonoBehaviour
 
     private PlayerController m_player;
     private LineRenderer m_lineRenderer;
+    private TimeController m_timeController;
     
     private void Awake()
     {
         m_player = transform.parent.GetComponent<PlayerController>();
-        m_lineRenderer = GetComponent<LineRenderer>();    
+        m_lineRenderer = GetComponent<LineRenderer>();
+        m_timeController = FindObjectOfType<TimeController>();
     }
     void Start()
     {
@@ -25,7 +27,7 @@ public class DashIndicator : MonoBehaviour
         var position = transform.parent.position;
         var direction = (Vector3)m_player.DashDirection;
         var startPos = position + direction * m_nearDistance;
-        var endPos = position + direction * (m_player.OnBulletTime ? m_player.DashDistance : m_farDinstance);
+        var endPos = position + direction * (m_timeController.OnBulletTime ? m_player.SmashDistance : m_farDinstance);
 
         //var firstQuarter = Vector3.Lerp(startPos, endPos, 0.1f);
         //var thirdQuarter = Vector3.Lerp(startPos, endPos, 0.9f);
