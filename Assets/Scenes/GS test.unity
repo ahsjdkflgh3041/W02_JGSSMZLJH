@@ -97915,6 +97915,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Melee Monster (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 8860135551187738661, guid: d677677d6da59f040a0301e8f0649882, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d677677d6da59f040a0301e8f0649882, type: 3}
 --- !u!4 &2115757729 stripped
