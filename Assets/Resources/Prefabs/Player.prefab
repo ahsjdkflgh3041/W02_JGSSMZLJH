@@ -527,6 +527,7 @@ MonoBehaviour:
   m_defaultGravity: 1
   m_maxFallSpeed: 100
   m_wallJumpXModifier: 1.5
+  m_coyoteTime: 0.2
   m_dashDistance: 7
   m_dashPreDelay: 0.05
   m_dashGravity: 1.75

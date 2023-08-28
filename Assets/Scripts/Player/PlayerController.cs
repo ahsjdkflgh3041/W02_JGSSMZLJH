@@ -32,6 +32,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float m_defaultGravity = 1;
     [SerializeField] private float m_maxFallSpeed = 100f;
     [SerializeField] private float m_wallJumpXModifier = 1;
+    [SerializeField] private float m_coyoteTime;
     [Header("Dash")]
     [SerializeField] private float m_dashDistance;
     [SerializeField] private float m_dashPreDelay;
@@ -52,8 +53,11 @@ public class PlayerController : MonoBehaviour
     private float m_directionX;
     private float m_directionY;
     private float m_desiredVelocityX;
-    private float m_gravityCoefficient;
     private bool m_desiredJump;
+    private float m_coyoteTimeCounter;
+    private bool m_canCoyoteWall;
+    private int m_coyoteWallDirection;
+    private float m_gravityCoefficient;
     private float m_gravityMultiplier;
     private bool m_desiredDash;
     private bool m_desiredSmash;
@@ -222,10 +226,13 @@ public class PlayerController : MonoBehaviour
         if (!m_wasOnWall && m_onWall)
         {
             m_wasOnWall = true;
+            m_canCoyoteWall = false;
+            m_coyoteWallDirection = m_onRightWall ? -1 : 1;
         }
         if (m_wasOnWall && !m_onWall)
         {
             m_wasOnWall = false;
+            m_canCoyoteWall = true;
             if (!m_onGround)
             {
                 m_canJumpAgain = true;
@@ -235,7 +242,13 @@ public class PlayerController : MonoBehaviour
         if (m_onGround || m_onWall)
         {
             m_canJumpAgain = false;
+            m_coyoteTimeCounter = 0;
         }
+        else if (!m_onGround && !m_onWall)
+        {
+            m_coyoteTimeCounter += Time.deltaTime;
+        }
+        //Debug.Log($"CoyoteTimeCounter : {m_coyoteTimeCounter}");
         m_desiredVelocityX = (m_directionX == 0 ? 0 : Mathf.Sign(m_directionX)) * m_speedX;
     }
 
@@ -245,7 +258,6 @@ public class PlayerController : MonoBehaviour
 
         m_velocity = m_rigidBody.velocity;
 
-        SetGravity();
         SetVelocity();
 
         if (m_isDashing)
@@ -282,6 +294,7 @@ public class PlayerController : MonoBehaviour
 
         m_rigidBody.velocity = new Vector2(m_velocity.x, Mathf.Max(m_velocity.y, -m_maxFallSpeed));
 
+        SetGravity();
     }
     private void SetVelocity()
     {
@@ -401,10 +414,12 @@ public class PlayerController : MonoBehaviour
     }
     private void DoAJump()
     {
-        if (m_onGround || m_canJumpAgain || m_onWall)
+        var canCoyote = (m_coyoteTimeCounter > Time.fixedDeltaTime && m_coyoteTimeCounter < m_coyoteTime);
+        if (m_onGround || m_canJumpAgain || m_onWall || canCoyote)
         {
             m_desiredJump = false;
             m_jumpBufferCounter = 0;
+            m_coyoteTimeCounter = 0;
             m_canJumpAgain = m_enableDoubleJump && m_canJumpAgain == false;
 
             float jumpSpeed = m_onWall ?
@@ -413,9 +428,17 @@ public class PlayerController : MonoBehaviour
 
             //Debug.Log($"jumpSpeed(pre) = {jumpSpeed}");
 
-            if (m_onWall)
+            var canCoyoteWall = (m_canCoyoteWall && canCoyote);
+            if (m_onWall || canCoyoteWall)
             {
-                m_velocity.x = m_speedX * (m_onRightWall ? -1 : 1) * m_wallJumpXModifier;
+                var direction = m_onRightWall ? -1 : 1;
+                if (canCoyoteWall)
+                {
+                    m_canCoyoteWall = false;
+                    direction = m_coyoteWallDirection;
+                    m_canJumpAgain = true;
+                }
+                m_velocity.x = m_speedX * direction * m_wallJumpXModifier;
                 m_velocity.y = jumpSpeed;
                 m_hasPerformedWallJump = true;
             }
@@ -473,8 +496,8 @@ public class PlayerController : MonoBehaviour
     }
 
     private void SetGravity()
-    { 
-        //if (m_hasJumpedThisFrame) { return; }
+    {
+        if (m_hasJumpedThisFrame) { return; }
 
         if (m_isDashing)
         {
@@ -492,6 +515,7 @@ public class PlayerController : MonoBehaviour
             m_gravityMultiplier = m_smashGravity * k_defalutFixedTimestep / Time.fixedDeltaTime;
             return;
         }
+
         if (OnBulletTime)
         {
             m_gravityMultiplier = m_defaultGravity / 2;
@@ -542,7 +566,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            if (m_onGround)
+            if (m_onGround || m_onWall)
             {
                 m_isJumping = false;
             }
