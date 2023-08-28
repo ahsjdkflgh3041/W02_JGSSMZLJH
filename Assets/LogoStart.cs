@@ -15,10 +15,11 @@ public class LogoStart : MonoBehaviour
 
     IEnumerator IntroText()
     {
-        yield return new WaitForSeconds(6f);
+        yield return new WaitForSecondsRealtime(6f);
         m_text_Dash.SetActive(true);
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSecondsRealtime(0.6f);
         m_text_Rush.SetActive(true);
+        yield return new WaitForSecondsRealtime(0.6f);
         m_startBtn.SetActive(true);
     }
 }
