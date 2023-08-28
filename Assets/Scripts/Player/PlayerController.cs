@@ -187,6 +187,7 @@ public class PlayerController : MonoBehaviour
             {
                 m_dashDirection = context.ReadValue<Vector2>().normalized;
             }
+            CompensateDirection();
         }
     }
 
@@ -196,6 +197,7 @@ public class PlayerController : MonoBehaviour
         {
             var mousePosition = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition);
             m_dashDirection = (mousePosition - (Vector2)transform.position).normalized;
+            CompensateDirection();
         }
 
         if (!m_health.IsAlive) { return; }
@@ -204,8 +206,6 @@ public class PlayerController : MonoBehaviour
         m_onRightWall = m_ground.GetOnRightWall();
         m_onLeftWall = m_ground.GetOnLeftWall();
         m_onWall = m_ground.GetOnWall();
-
-        CompensateDirection();
 
         m_gravityCoefficient = (-2 * m_jumpHeight) / (m_jumpTimeToApex * m_jumpTimeToApex * Physics2D.gravity.y);
         m_rigidBody.gravityScale = m_gravityMultiplier * m_gravityCoefficient;
@@ -270,7 +270,7 @@ public class PlayerController : MonoBehaviour
     {
         var cirteriaDegree = k_inputCriteriaDegree;
         if (
-            (m_ground.OnGroundRight && m_dashDirection.x > 0) || (m_ground.OnGroundLeft && m_dashDirection.x < 0)
+            ((m_ground.OnGroundRight && m_dashDirection.x > 0) || (m_ground.OnGroundLeft && m_dashDirection.x < 0))
             && m_dashDirection.y < 0 && Vector2.Angle(Vector2.down, m_dashDirection) > cirteriaDegree
             )
         {
