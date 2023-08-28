@@ -50,6 +50,7 @@ MonoBehaviour:
   m_dashStiffTimeScale: 0.5
   m_bulletTimeScale: 0.05
   m_smashBulletTimeDuration: 2
+  m_additionalBulletTimePerTarget: 0.25
 --- !u!212 &7287343155009920373
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -451,7 +452,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 1742
+    m_Bits: 3790
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 8400000, guid: 7661f469890b64846ad649b3819dbf74, type: 2}
   m_TargetDisplay: 0
