@@ -19,25 +19,15 @@ public class PlayerRayProjector : MonoBehaviour
     }
     public float CalculateDistance(Vector2 direction, float distance, LayerMask layer, int ignoreNum, float sizeCoefficient = 0.95f)
     {
-        var horizontal = 0.95f * m_boxCollider.size.x * transform.lossyScale.x / 2;
-        var vertical = 0.95f * m_boxCollider.size.y * transform.lossyScale.y / 2;
-        var position = (Vector2)transform.position;
         var dashVector = direction * distance;
-
-        var rayStartPoints = new List<Vector2>();
-        var upRightPosition = position + Vector2.right * horizontal + Vector2.up * vertical;
-        var upLeftPosition = position + Vector2.left * horizontal + Vector2.up * vertical;
-        var downRightPosition = position + Vector2.right * horizontal + Vector2.down * vertical;
-        var downLeftPosition = position + Vector2.left * horizontal + Vector2.down * vertical;
-        var rayArray = new Vector2[] { upRightPosition, upLeftPosition, downRightPosition, downLeftPosition };
-        rayStartPoints = rayArray.ToList();
+        var rayStartPoints = GetCorners(sizeCoefficient).Select(c => (Vector2)transform.position + c);
 
         var distances = rayStartPoints.Select(rsp => {
             var hit = Physics2D.Linecast(rsp, rsp + dashVector, layer);
             var hitPoint = hit ? hit.point : rsp + dashVector;
             var measuredDistance = Vector2.Distance(rsp, hitPoint);
-            Debug.Log($"{rsp}, {hitPoint}");
-            Debug.DrawLine(rsp, hitPoint, Color.yellow, 1);
+            //Debug.Log($"{rsp}, {hitPoint}");
+            Debug.DrawLine(rsp, hitPoint, Color.yellow, 0.1f);
             return Mathf.Min(distance, measuredDistance);
             }
         ).ToList();
@@ -46,25 +36,31 @@ public class PlayerRayProjector : MonoBehaviour
         return distances.OrderBy(d => d).ElementAt(ignoreNum);
     }
 
-    private List<RaycastHit2D> ShootRays(Vector2 direction, float distance, LayerMask layer, float sizeCoefficient = 0.95f)
+    public List<Transform> SelectTransforms(Vector2 start, Vector2 end, LayerMask layer, float sizeCoefficient = 0.95f)
+    {
+        var corners = GetCorners(sizeCoefficient);
+        var unionResult = new List<Transform>();
+        corners.ForEach(c =>
+        {
+            var targets = Physics2D.LinecastAll(start + c, end + c, layer).Select(h => h.transform);
+            Debug.DrawLine(start + c, end + c, Color.blue, 0.5f);
+            unionResult = unionResult.Union(targets).ToList();
+        });
+        unionResult.ForEach(t => Debug.Log($"target : {t.name}({t.GetInstanceID()})"));
+        return unionResult;
+    }
+
+    private List<Vector2> GetCorners(float sizeCoefficient = 0.95f)
     {
         var horizontal = 0.95f * m_boxCollider.size.x * transform.lossyScale.x / 2;
         var vertical = 0.95f * m_boxCollider.size.y * transform.lossyScale.y / 2;
-        var position = (Vector2)transform.position;
-        var targetVector = direction * distance;
 
-        var upRightPosition = position + Vector2.right * horizontal + Vector2.up * vertical;
-        var upLeftPosition = position + Vector2.left * horizontal + Vector2.up * vertical;
-        var downRightPosition = position + Vector2.right * horizontal + Vector2.down * vertical;
-        var downLeftPosition = position + Vector2.left * horizontal + Vector2.down * vertical;
+        var upRight = Vector2.right * horizontal + Vector2.up * vertical;
+        var upLeft = Vector2.left * horizontal + Vector2.up * vertical;
+        var downRight = Vector2.right * horizontal + Vector2.down * vertical;
+        var downLeft = Vector2.left * horizontal + Vector2.down * vertical;
+        var result = new Vector2[] { upRight, upLeft, downRight, downLeft };
+        return result.ToList();
 
-        var result = new List<RaycastHit2D>();
-
-        result.Add(Physics2D.Linecast(upRightPosition, upRightPosition + targetVector, layer));
-        result.Add(Physics2D.Linecast(upLeftPosition, upLeftPosition + targetVector, layer));
-        result.Add(Physics2D.Linecast(downRightPosition, downRightPosition + targetVector, layer));
-        result.Add(Physics2D.Linecast(downLeftPosition, downLeftPosition + targetVector, layer));
-
-        return result;
     }
 }

@@ -19,6 +19,7 @@ public class PlayerAttack : MonoBehaviour
 
     //private UIManager uiManager;
     private PlayerGround m_ground;
+    private PlayerRayProjector m_rayProjector;
 
     private float m_currentStamina;
     private float m_currentSmashCooldown;
@@ -33,6 +34,7 @@ public class PlayerAttack : MonoBehaviour
     {
         // uiManager = FindObjectOfType<UIManager>();
         m_ground = GetComponent<PlayerGround>();
+        m_rayProjector = GetComponent<PlayerRayProjector>();
 
         m_currentStamina = m_maxStamina;
         m_currentSmashCooldown = -1;
@@ -64,7 +66,7 @@ public class PlayerAttack : MonoBehaviour
     {
         m_currentStamina -= m_staminaPerDash;
 
-        var attackables = Physics2D.LinecastAll(start, end, m_attackableLayer).Select(a => a.transform.GetComponent<IDamagable>()).ToList();
+        var attackables = m_rayProjector.SelectTransforms(start, end, m_attackableLayer).Select(a => a.GetComponent<IDamagable>()).ToList();
         foreach (var attackable in attackables)
         {
             attackable.TakeDamage(m_dashPower);
@@ -76,8 +78,10 @@ public class PlayerAttack : MonoBehaviour
     {
         m_currentSmashCooldown = m_smashCooldown;
 
-        var attackables = Physics2D.LinecastAll(start, end, m_attackableLayer).Select(a => a.transform.GetComponent<IDamagable>()).ToList();
-        foreach (var attackable in attackables)
+        var attackables = m_rayProjector.SelectTransforms(start, end, m_attackableLayer);
+        Debug.Log(attackables.Count);
+        var result = attackables.Select(a => a.transform.GetComponent<IDamagable>()).ToList();
+        foreach (var attackable in result)
         {
             attackable.TakeDamage(m_smashPower);
         }
