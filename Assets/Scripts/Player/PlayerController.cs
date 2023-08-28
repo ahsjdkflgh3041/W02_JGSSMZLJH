@@ -86,7 +86,7 @@ public class PlayerController : MonoBehaviour
 
     public bool IsKeyboardAndMouse { get { return m_input.currentControlScheme.Equals(k_keyboardAndMouseString); } }
     public Vector2 DashDirection { get { return m_dashDirection; } }
-    public float SmashDistance { get { return OnBulletTime ? m_smashDistance : m_dashDistance; } }
+    public float IndicatorDistance { get { return m_smashInput && m_attack.CanSmash ? m_smashDistance : m_dashDistance; } }
     private bool OnBulletTime { get { return m_timeController.OnBulletTime; } }
     public bool IsSmashInput { get { return m_smashInput; } }
 
@@ -140,7 +140,6 @@ public class PlayerController : MonoBehaviour
             {
                 if (m_attack.CanSmash)
                 {
-                    Debug.Log($"CanSmash : {m_attack.CanSmash}");
                     m_timeController.StartBulletTime();
                     m_canJumpOrDash = false;
                     m_rigidBody.velocity = new Vector2(m_rigidBody.velocity.x, Mathf.Max(m_rigidBody.velocity.y, m_rigidBody.velocity.y / 4));
