@@ -6,8 +6,7 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     public Vector3 m_bulletDir;
-
-    [SerializeField] public float m_bulletSpeed;
+    public float m_bulletSpeed;
     public int m_bulletDamage;
 
     private void Update()

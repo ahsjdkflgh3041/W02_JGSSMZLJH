@@ -16,7 +16,7 @@ public class PlayerHealth : MonoBehaviour, IDamagable
     {
         Health = maxHealth;
         UIManager.Instance.MaxHPUI = Health;
-        Debug.Log($"PlayerHealth : {Health}/{maxHealth}");
+        //Debug.Log($"PlayerHealth : {Health}/{maxHealth}");
     }
 
     public void TakeDamage(int damage)

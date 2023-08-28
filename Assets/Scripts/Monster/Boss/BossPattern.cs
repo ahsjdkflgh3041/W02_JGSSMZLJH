@@ -52,7 +52,6 @@ public class BossPattern1 : BossPattern
         {
             SummonMonster();
         }
-        Debug.Log($"pattern1");
     }
 
     void SummonMonster()
@@ -158,38 +157,44 @@ public class BossPattern3 : BossPattern
     {
         m_coolTime = 20;
         m_shotCoolTime = 0;
-        m_bulletNum = 30;
+        m_bulletNum = 36;
     }
 
     public override void ExcuteAttack()
     {
         if (m_canAttack == false) return;
 
+        //CanAttack = false;
+        //m_currentBulletNum = 0;
+        //m_shotCoolTimeCounter = 0;
+        //m_randomNum = Random.Range(-2, 2);
+
+        //DetectTarget();
+
         CanAttack = false;
-        m_currentBulletNum = 0;
-        m_shotCoolTimeCounter = 0;
-        m_randomNum = Random.Range(-2, 2);
-
-        DetectTarget();
-    }
-
-    public override void WaitCoolTime()
-    {
-        base.WaitCoolTime();
-
-        if (m_currentBulletNum == m_bulletNum)
+        for (int i = 0; i < m_bulletNum; i++) 
         {
-            return;
-        }
-        m_shotCoolTimeCounter += Time.deltaTime;
-
-        if (m_shotCoolTimeCounter > m_shotCoolTime)
-        {
-            m_shotCoolTimeCounter -= m_shotCoolTime;
-            m_currentBulletNum++;
-            ShotBullet(m_currentBulletNum);
+            ShotBullet(m_bulletNum);
         }
     }
+
+    //public override void WaitCoolTime()
+    //{
+    //    base.WaitCoolTime();
+
+    //    if (m_currentBulletNum == m_bulletNum)
+    //    {
+    //        return;
+    //    }
+    //    m_shotCoolTimeCounter += Time.deltaTime;
+
+    //    if (m_shotCoolTimeCounter > m_shotCoolTime)
+    //    {
+    //        m_shotCoolTimeCounter -= m_shotCoolTime;
+    //        m_currentBulletNum++;
+    //        ShotBullet(m_currentBulletNum);
+    //    }
+    //}
 
     void DetectTarget()
     {
@@ -202,11 +207,17 @@ public class BossPattern3 : BossPattern
     void ShotBullet(int _num)
     {
         Object prefab = Resources.Load("Prefabs/Monster/Bullet");
-        Bullet bullet = GameObject.Instantiate(prefab, m_bossTransform.position, m_bossTransform.rotation).GetComponent<Bullet>();
-
-        bullet.m_bulletDir = (m_targetDir + _num * Vector3.one * 2).normalized;
-        bullet.m_bulletDir = (m_targetDir - _num * Vector3.one * 2).normalized;
+        GameObject go = (GameObject)GameObject.Instantiate(prefab, m_bossTransform.position, m_bossTransform.rotation);
+        Bullet bullet = go.GetComponent<Bullet>();
 
         bullet.GetComponent<Transform>().localScale = Vector3.one;
+        bullet.m_bulletSpeed *= 1.5f;
+        bullet.m_bulletDir = Quaternion.AngleAxis(10 * _num, Vector3.right) * Vector3.right;
+
+        //if (m_randomNum > 0)
+        //    bullet.m_bulletDir = (m_targetDir + _num * Vector3.one * 2).normalized;
+        //else
+        //    bullet.m_bulletDir = (m_targetDir - _num * Vector3.one * 2).normalized;
+
     }
 }

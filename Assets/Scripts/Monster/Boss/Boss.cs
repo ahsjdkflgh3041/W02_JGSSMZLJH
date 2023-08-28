@@ -41,8 +41,8 @@ public class Boss : Monster
         #endregion
 
         #region BossPattern
-        m_patterns.Add("BossPattern1", new BossPattern1());
-        m_patterns.Add("BossPattern2", new BossPattern2());
+       // m_patterns.Add("BossPattern1", new BossPattern1());
+       // m_patterns.Add("BossPattern2", new BossPattern2());
         m_patterns.Add("BossPattern3", new BossPattern3());
         #endregion
     }
