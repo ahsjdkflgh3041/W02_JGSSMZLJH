@@ -14,11 +14,11 @@ public class SceneBase : MonoBehaviour
 
     protected virtual void init()
     {
-        GameObject go = GameObject.Find("@Scene");
-        if (go == null)
-        {
-            go = new GameObject() { name = "@Scene" };
-        }
+        //GameObject go = GameObject.Find("@Scene");
+        //if (go == null)
+        //{
+        //    go = new GameObject() { name = "@Scene" };
+        //}
 
         GameObject eventSystem = GameObject.Find("EventSystem");
         if (eventSystem == null)

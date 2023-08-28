@@ -31,7 +31,9 @@ public class GameScene : SceneBase
     {
         m_isGameOver = IsGameOver(m_player);
         if (m_isGameOver)
+        {
             m_gameOverCanvas.SetActive(true);
+        }    
 
         if (m_isGameOver && Input.anyKey)
         { 

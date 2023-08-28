@@ -17,8 +17,6 @@ public class SaveBox : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            Debug.Log("in trigger");
-
             RevivalManager.Instance.SaveRevivalPoint(m_SpawnPoint.position);
         }
     }
