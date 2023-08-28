@@ -18,6 +18,7 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private LayerMask m_attackableLayer;
 
     //private UIManager uiManager;
+    private PlayerController m_player;
     private PlayerGround m_ground;
     private PlayerRayProjector m_rayProjector;
     private TimeController m_timeController;
@@ -34,6 +35,7 @@ public class PlayerAttack : MonoBehaviour
     private void Awake()
     {
         // uiManager = FindObjectOfType<UIManager>();
+        m_player = GetComponent<PlayerController>();
         m_ground = GetComponent<PlayerGround>();
         m_rayProjector = GetComponent<PlayerRayProjector>();
         m_timeController = FindObjectOfType<TimeController>();
@@ -62,6 +64,11 @@ public class PlayerAttack : MonoBehaviour
             }
         }
         UIManager.Instance.UpdateUIAtk(CanDash, m_currentStamina, m_currentSmashCooldown);
+
+        if (!m_player.IsSmashInput && m_timeController.OnBulletTime && !CanDash)
+        {
+            m_timeController.EndBulletTime();
+        }
     }
 
     public void Dash(Vector2 start, Vector2 end)
@@ -74,7 +81,7 @@ public class PlayerAttack : MonoBehaviour
     {
         m_currentSmashCooldown = m_smashCooldown;
         bool hasAttacked = PerformAttack(start, end, m_smashPower);
-        if (hasAttacked)
+        if (hasAttacked && CanDash)
         {
             m_timeController.StartBulletTime();
             m_timeController.EndBulletTime(hasAttacked);
