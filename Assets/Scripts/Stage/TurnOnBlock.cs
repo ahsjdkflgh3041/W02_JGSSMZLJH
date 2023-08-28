@@ -36,7 +36,7 @@ public class TurnOnBlock : MonoBehaviour
     private void CountEnemy()
     {
         m_enemyCount = m_monsterParent.GetComponentsInChildren<MonsterHealth>().Length;
-        Debug.Log($"Enemy Count : {m_enemyCount}");
+        //Debug.Log($"Enemy Count : {m_enemyCount}");
         if (m_enemyCount == 0) { m_isEnemyAllDie=true; }        
     }
 

@@ -400,11 +400,10 @@ public class PlayerController : MonoBehaviour
                 Mathf.Sqrt(-2f * Physics2D.gravity.y * m_defaultGravity * m_gravityCoefficient * m_jumpHeight / m_defaultGravity)
                 : Mathf.Sqrt(-2f * Physics2D.gravity.y * m_rigidBody.gravityScale * m_jumpHeight / m_gravityMultiplier);
 
-            Debug.Log($"jumpSpeed(pre) = {jumpSpeed}");
+            //Debug.Log($"jumpSpeed(pre) = {jumpSpeed}");
 
             if (m_onWall)
             {
-                Debug.Log("DoAJump : onWall");
                 m_velocity.x = m_speedX * (m_onRightWall ? -1 : 1) * m_wallJumpXModifier;
                 m_velocity.y = jumpSpeed;
                 m_hasPerformedWallJump = true;
@@ -423,7 +422,7 @@ public class PlayerController : MonoBehaviour
                 m_velocity.y += jumpSpeed;
             }
 
-            Debug.Log($"jump speed = {jumpSpeed}, velocity = {m_velocity}");
+            //Debug.Log($"jump speed = {jumpSpeed}, velocity = {m_velocity}");
             m_isJumping = true;
         }
     }
@@ -445,7 +444,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            Debug.Log($"Cannot Dash... Stamina = {m_attack.CurrentStamina}");
+            //Debug.Log($"Cannot Dash... Stamina = {m_attack.CurrentStamina}");
         }
     }
     private void DoASmash()

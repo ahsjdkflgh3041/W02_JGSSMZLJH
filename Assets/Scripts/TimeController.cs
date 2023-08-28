@@ -35,7 +35,6 @@ public class TimeController : MonoBehaviour
         {
             m_onBulletTime = true;
             m_currentTimeScale = m_bulletTimeScale;
-
             ChangeBacklightAlpha(0.5f);
             ApplyTimeScale();
         }
@@ -43,11 +42,22 @@ public class TimeController : MonoBehaviour
 
     public void EndBulletTime(bool hasDelay = false)
     {
-        StartCoroutine(EndBulletTimeAfterDelay(hasDelay ? m_smashBulletTimeDuration : 0));
+        if (hasDelay)
+        {
+            StartCoroutine(EndBulletTimeAfterDelay(m_smashBulletTimeDuration));
+        }
+        else
+        {
+            ExecuteEndBulletTime();
+        }
     }
     IEnumerator EndBulletTimeAfterDelay(float delay)
     {
         yield return new WaitForSecondsRealtime(delay);
+        ExecuteEndBulletTime();
+    }
+    void ExecuteEndBulletTime()
+    {
         if (m_onBulletTime)
         {
             m_onBulletTime = false;
@@ -64,12 +74,12 @@ public class TimeController : MonoBehaviour
 
     IEnumerator ApplyDashStiffByDamage(List<int> damamges)
     {
-        Debug.Log($"Dash stiff starts! : {damamges.Count} damage(s)");
+        //Debug.Log($"Dash stiff starts! : {damamges.Count} damage(s)");
         foreach (var damage in damamges)
         {
             Time.timeScale = m_dashStiffTimeScale;
             yield return new WaitForSecondsRealtime(damage * m_dashStiffPerDamage * (m_onBulletTime ? 0 : 1));
-            Debug.Log($"stiff : {damage} * {m_dashStiffPerDamage}");
+            //Debug.Log($"stiff : {damage} * {m_dashStiffPerDamage}");
             Time.timeScale = m_currentTimeScale;
             yield return new WaitForSecondsRealtime(m_dashStiffDelay * (m_onBulletTime ? 0 : 1));
 

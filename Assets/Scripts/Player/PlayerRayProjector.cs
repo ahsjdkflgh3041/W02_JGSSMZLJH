@@ -46,7 +46,7 @@ public class PlayerRayProjector : MonoBehaviour
             Debug.DrawLine(start + c, end + c, Color.blue, 0.5f);
             unionResult = unionResult.Union(targets).ToList();
         });
-        unionResult.ForEach(t => Debug.Log($"target : {t.name}({t.GetInstanceID()})"));
+        //unionResult.ForEach(t => Debug.Log($"target : {t.name}({t.GetInstanceID()})"));
         return unionResult;
     }
 
