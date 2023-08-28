@@ -11,10 +11,13 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Image m_hpBarImg;
     [SerializeField] private Image m_staminaBarImg;
     [SerializeField] private Image m_smashCoolDownImg;
+    [SerializeField] private GameObject m_enemyInfo;
+    [SerializeField] private Text m_enemyText;
     #endregion
 
     #region UI_Use Variable
     [HideInInspector] public int MaxHPUI;
+    [HideInInspector] public int MaxEnemy;
     [HideInInspector] public float MaxStaminaUI;
     [HideInInspector] public float MaxCoolDownUI;
     #endregion
@@ -40,6 +43,18 @@ public class UIManager : MonoBehaviour
     public void UpdateUIHP(int  m_currentHP)
     {
         m_hpBarImg.fillAmount = m_currentHP / (float)MaxHPUI;
+    }
+
+    public void UpdateUIEnemyFirst(int m_enemyCount, bool m_isPlayerEnter)
+    {
+        m_enemyInfo.SetActive(m_isPlayerEnter);
+        MaxEnemy = m_enemyCount;
+        m_enemyText.text = ($"{m_enemyCount} / {MaxEnemy}");
+    }
+
+    public void UpdateUIEnemy(int m_enemyCount)
+    {
+        m_enemyText.text = ($"{m_enemyCount} / {MaxEnemy}");
     }
 
 }
