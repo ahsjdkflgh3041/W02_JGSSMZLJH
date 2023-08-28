@@ -10,6 +10,7 @@ public class TimeController : MonoBehaviour
     [SerializeField] private float m_dashStiffDelay;
     [SerializeField] private float m_dashStiffTimeScale;
     [SerializeField] private float m_bulletTimeScale = 0.05f;
+    [SerializeField] private float m_smashBulletTimeDuration;
 
     private float m_defalutTimeScale;
     private float m_currentTimeScale;
@@ -36,8 +37,13 @@ public class TimeController : MonoBehaviour
         ApplyTimeScale();
     }
 
-    public void EndBulletTime()
+    public void EndBulletTime(bool hasDelay = false)
     {
+        StartCoroutine(EndBulletTimeAfterDelay(hasDelay ? m_smashBulletTimeDuration : 0));
+    }
+    IEnumerator EndBulletTimeAfterDelay(float delay)
+    {
+        yield return new WaitForSecondsRealtime(delay);
         m_onBulletTime = false;
         m_currentTimeScale = m_defalutTimeScale;
         ChangeBacklightAlpha(0);

@@ -49,6 +49,7 @@ MonoBehaviour:
   m_dashStiffDelay: 0
   m_dashStiffTimeScale: 0
   m_bulletTimeScale: 0.05
+  m_smashBulletTimeDuration: 1.5
 --- !u!212 &7287343155009920373
 SpriteRenderer:
   m_ObjectHideFlags: 0

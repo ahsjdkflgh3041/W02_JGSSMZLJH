@@ -68,7 +68,6 @@ public class PlayerController : MonoBehaviour
     private float m_smashStartTime;
     private Vector2 m_smashStartPosition;
     private Vector2 m_smashTargetPosition;
-    private float m_defalutTimeScale;
     private float m_lastVelocityY;
 
     private bool m_isJumping;
@@ -78,7 +77,6 @@ public class PlayerController : MonoBehaviour
     private bool m_hasPerformedDash;
     private bool m_isSmashing;
     private bool m_hasPerformedSmash;
-    private bool m_onBulletTime;
     private bool m_onGround;
     private bool m_onWall;
     private bool m_wasOnWall;
@@ -88,8 +86,9 @@ public class PlayerController : MonoBehaviour
 
     public bool IsKeyboardAndMouse { get { return m_input.currentControlScheme.Equals(k_keyboardAndMouseString); } }
     public Vector2 DashDirection { get { return m_dashDirection; } }
-    public float SmashDistance { get { return m_onBulletTime ? m_smashDistance : m_dashDistance; } }
-    
+    public float SmashDistance { get { return OnBulletTime ? m_smashDistance : m_dashDistance; } }
+    private bool OnBulletTime { get { return m_timeController.OnBulletTime; } }
+
 
     void Awake()
     {
@@ -102,7 +101,6 @@ public class PlayerController : MonoBehaviour
         m_timeController = FindObjectOfType<TimeController>();
 
         m_gravityMultiplier = m_defaultGravity;
-        m_defalutTimeScale = Time.timeScale;
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -138,9 +136,8 @@ public class PlayerController : MonoBehaviour
         {
             //Debug.Log("OnSmash started");
             m_smashInput = true;
-            if (!m_onBulletTime && m_attack.CanSmash)
+            if (!OnBulletTime && m_attack.CanSmash)
             {
-                m_onBulletTime = true;
                 m_timeController.StartBulletTime();
                 m_canJumpOrDash = false;
                 m_rigidBody.velocity = new Vector2(m_rigidBody.velocity.x, Mathf.Max(m_rigidBody.velocity.y, m_rigidBody.velocity.y / 4));
@@ -154,11 +151,10 @@ public class PlayerController : MonoBehaviour
         if (context.canceled)
         {
             //Debug.Log("OnSmash canceled");
-            if (m_onBulletTime)
+            if (OnBulletTime)
             {
                 m_desiredSmash = true;
                 m_timeController.EndBulletTime();
-                m_onBulletTime = false;
             }
             m_smashInput = false;
         }
@@ -293,7 +289,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if (m_onBulletTime)
+        if (OnBulletTime)
         {
 
         }
@@ -308,7 +304,7 @@ public class PlayerController : MonoBehaviour
     }
     private void PerformDash()
     {
-        float dashTime = Time.time - m_dashStartTime;
+        float dashTime = Time.realtimeSinceStartup - m_dashStartTime;
 
         if (dashTime <= m_dashPreDelay)
         {
@@ -347,7 +343,7 @@ public class PlayerController : MonoBehaviour
     }
     private void PerformSmash()
     {
-        float smashTime = Time.time - m_smashStartTime;
+        float smashTime = Time.realtimeSinceStartup - m_smashStartTime;
 
         if (smashTime <= m_smashPreDelay)
         {
@@ -439,7 +435,7 @@ public class PlayerController : MonoBehaviour
 
             m_dashStartPosition = (Vector2)transform.position;
             m_dashTargetPosition = (Vector2)transform.position + m_dashDirection.normalized * m_dashDistance;
-            m_dashStartTime = Time.time;
+            m_dashStartTime = Time.realtimeSinceStartup;
         }
         else
         {
@@ -457,7 +453,7 @@ public class PlayerController : MonoBehaviour
 
         m_smashStartPosition = (Vector2)transform.position;
         m_smashTargetPosition = (Vector2)transform.position + m_dashDirection.normalized * m_smashDistance;
-        m_smashStartTime = Time.time;
+        m_smashStartTime = Time.realtimeSinceStartup;
     }
 
     private void SetGravity()
@@ -480,7 +476,7 @@ public class PlayerController : MonoBehaviour
             m_gravityMultiplier = m_smashGravity * k_defalutFixedTimestep / Time.fixedDeltaTime;
             return;
         }
-        if (m_onBulletTime)
+        if (OnBulletTime)
         {
             m_gravityMultiplier = m_defaultGravity / 2;
             return;
