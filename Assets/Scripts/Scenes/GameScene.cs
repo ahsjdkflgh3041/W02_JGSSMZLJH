@@ -21,7 +21,7 @@ public class GameScene : SceneBase
 
         SceneType = SceneType.Game;
 
-        m_gameOverCanvas = GameObject.Find("GameOver Canvas");
+        m_gameOverCanvas = Utility.GetChild(transform, "GameOver Canvas").gameObject;
         m_gameOverCanvas.SetActive(false);
 
         m_player = GameObject.FindWithTag("Player");
