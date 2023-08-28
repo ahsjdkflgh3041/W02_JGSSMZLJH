@@ -49,7 +49,7 @@ MonoBehaviour:
   m_dashStiffDelay: 0
   m_dashStiffTimeScale: 0.5
   m_bulletTimeScale: 0.05
-  m_smashBulletTimeDuration: 1.5
+  m_smashBulletTimeDuration: 2
 --- !u!212 &7287343155009920373
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -783,6 +783,10 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 3aff27e3-94fc-409e-8f7d-02ea98dc5abe
     m_ActionName: Player/New action
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: fd9e6e67-00c4-41f4-a7fe-83d291104549
+    m_ActionName: UI/Start[/XInputControllerWindows/start,/Keyboard/enter]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -806,7 +810,7 @@ MonoBehaviour:
   m_staminaRegen: 8
   m_staminaRegenOnGround: 200
   m_smashPower: 5
-  m_smashCooldown: 1
+  m_smashCooldown: 1.5
   m_attackableLayer:
     serializedVersion: 2
     m_Bits: 128
