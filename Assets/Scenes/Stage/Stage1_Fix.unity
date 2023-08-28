@@ -61310,8 +61310,20 @@ PrefabInstance:
     m_TransformParent: {fileID: 1601578627}
     m_Modifications:
     - target: {fileID: 8860135551187738649, guid: d677677d6da59f040a0301e8f0649882, type: 3}
+      propertyPath: m_attackPower
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8860135551187738649, guid: d677677d6da59f040a0301e8f0649882, type: 3}
+      propertyPath: m_attackRange
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8860135551187738649, guid: d677677d6da59f040a0301e8f0649882, type: 3}
       propertyPath: m_detectRange
-      value: 6
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8860135551187738649, guid: d677677d6da59f040a0301e8f0649882, type: 3}
+      propertyPath: m_attackingTime
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8860135551187738650, guid: d677677d6da59f040a0301e8f0649882, type: 3}
       propertyPath: m_RootOrder

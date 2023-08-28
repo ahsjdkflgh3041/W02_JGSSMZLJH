@@ -5,6 +5,7 @@ using UnityEngine;
 public class DieState : BaseState
 {
     Boss m_boss;
+    Transform m_crown;
 
     float m_destroyTimeCounter;
     float m_destroyTime;
@@ -12,6 +13,7 @@ public class DieState : BaseState
     public DieState(Monster _monster) : base(_monster)
     {
         m_boss = GameObject.Find("Boss").GetComponent<Boss>();
+        m_crown = Utility.GetChild(m_boss.transform, "Crown");
 
         m_destroyTime = 3;
     }
@@ -20,6 +22,8 @@ public class DieState : BaseState
     {
         Utility.ChangeColor(m_monster.m_renderer, m_monster.m_dieColor);
         m_monster.m_collider.isTrigger = true;
+
+        m_crown.gameObject.SetActive(false);
 
         m_monster.DropItem();
     }

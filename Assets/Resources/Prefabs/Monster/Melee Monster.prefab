@@ -445,11 +445,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_state: 0
-  m_detectRange: 10
+  m_detectRange: 15
   m_attackRange: 1
   m_attackPower: 1
-  m_attackingTime: 1
-  m_attackCoolTime: 2
+  m_attackingTime: 0.5
+  m_attackCoolTime: 3
   m_dropItem: {fileID: 7456019442728126548, guid: 35fb82fc740ee674ea23eb46802ef36e, type: 3}
 --- !u!114 &323114787
 MonoBehaviour:
@@ -463,7 +463,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe67dc74443f2fa498c9d5ade8e769ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_maxHealth: 5
+  m_maxHealth: 4
 --- !u!114 &323114793
 MonoBehaviour:
   m_ObjectHideFlags: 0
