@@ -32,14 +32,8 @@ public class GameScene : SceneBase
         m_isGameOver = IsGameOver(m_player);
         if (m_isGameOver)
         {
-            m_gameOverCanvas.SetActive(true);
+            StartCoroutine(Restart()); 
         }    
-
-        if (m_isGameOver && Input.anyKey)
-        { 
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-            RevivalManager.Instance.InitSavePoints();
-        }
     }
 
     public void LoadClearScene()
@@ -55,5 +49,21 @@ public class GameScene : SceneBase
             return true;
         else
             return false;
+    }
+
+    IEnumerator Restart()
+    {
+        m_gameOverCanvas.SetActive(true);
+
+        yield return new WaitForSeconds(0.5f);
+
+        while (!Input.anyKey)
+        { 
+            yield return null;
+        }
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        RevivalManager.Instance.InitSavePoints();
+        StopAllCoroutines();
     }
 }
