@@ -232,13 +232,17 @@ public class PlayerController : MonoBehaviour
         if (m_wasOnWall && !m_onWall)
         {
             m_wasOnWall = false;
-            m_canCoyoteWall = true;
             if (!m_onGround)
             {
+                m_canCoyoteWall = true;
                 m_canJumpAgain = true;
             }
         }
 
+        if (m_onGround && m_canCoyoteWall)
+        {
+            m_canCoyoteWall = false;
+        }
         if (m_onGround || m_onWall)
         {
             m_canJumpAgain = false;
@@ -439,6 +443,7 @@ public class PlayerController : MonoBehaviour
                 {
                     m_canCoyoteWall = false;
                     direction = m_coyoteWallDirection;
+                    m_coyoteWallDirection = 0;
                     m_canJumpAgain = true;
                 }
                 m_velocity.x = m_speedX * direction * m_wallJumpXModifier;
