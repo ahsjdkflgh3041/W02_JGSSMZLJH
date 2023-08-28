@@ -47,7 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_dashStiffPerDamage: 0.02
   m_dashStiffDelay: 0
-  m_dashStiffTimeScale: 0
+  m_dashStiffTimeScale: 0.5
   m_bulletTimeScale: 0.05
   m_smashBulletTimeDuration: 1.5
 --- !u!212 &7287343155009920373

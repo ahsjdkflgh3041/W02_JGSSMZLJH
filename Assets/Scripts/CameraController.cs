@@ -33,11 +33,11 @@ public class CameraController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        m_currentPos = Vector3.Lerp(m_currentPos, m_player.position, Time.deltaTime * m_chaseSpeed);
+        m_currentPos = Vector3.Lerp(m_currentPos, m_player.position, Time.deltaTime * m_chaseSpeed / (m_timeController.OnBulletTime ? m_timeController.BulletTimeScale : 1));
         transform.position = m_currentPos + m_offset;
 
         if (m_timeController.OnBulletTime == true)
-            Camera.main.orthographicSize = Mathf.Lerp(m_currentCameraSize, m_smashCameraSize, Time.deltaTime * m_smashSizeChangeSpeed);
+            Camera.main.orthographicSize = Mathf.Lerp(m_currentCameraSize, m_smashCameraSize, Time.deltaTime * m_originSizeChangeSpeed / (m_timeController.OnBulletTime ? m_timeController.BulletTimeScale : 1));
         else
             Camera.main.orthographicSize = Mathf.Lerp(m_currentCameraSize, m_originCameraSize, Time.deltaTime * m_originSizeChangeSpeed);
         m_currentCameraSize = Camera.main.orthographicSize;

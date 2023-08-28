@@ -18,6 +18,7 @@ public class TimeController : MonoBehaviour
     private Color m_defaultColor;
 
     public bool OnBulletTime { get { return m_onBulletTime; } }
+    public float BulletTimeScale { get { return m_bulletTimeScale; } }
 
     void Awake()
     {
@@ -30,11 +31,14 @@ public class TimeController : MonoBehaviour
 
     public void StartBulletTime()
     {
-        m_onBulletTime = true;
-        m_currentTimeScale = m_bulletTimeScale;
+        if (!m_onBulletTime)
+        {
+            m_onBulletTime = true;
+            m_currentTimeScale = m_bulletTimeScale;
 
-        ChangeBacklightAlpha(0.5f);
-        ApplyTimeScale();
+            ChangeBacklightAlpha(0.5f);
+            ApplyTimeScale();
+        }
     }
 
     public void EndBulletTime(bool hasDelay = false)
@@ -44,10 +48,13 @@ public class TimeController : MonoBehaviour
     IEnumerator EndBulletTimeAfterDelay(float delay)
     {
         yield return new WaitForSecondsRealtime(delay);
-        m_onBulletTime = false;
-        m_currentTimeScale = m_defalutTimeScale;
-        ChangeBacklightAlpha(0);
-        ApplyTimeScale();
+        if (m_onBulletTime)
+        {
+            m_onBulletTime = false;
+            m_currentTimeScale = m_defalutTimeScale;
+            ChangeBacklightAlpha(0);
+            ApplyTimeScale();
+        }
     }
 
     public void ApplyDashStiff(List<int> damages)
@@ -61,10 +68,10 @@ public class TimeController : MonoBehaviour
         foreach (var damage in damamges)
         {
             Time.timeScale = m_dashStiffTimeScale;
-            yield return new WaitForSecondsRealtime(damage * m_dashStiffPerDamage);
+            yield return new WaitForSecondsRealtime(damage * m_dashStiffPerDamage * (m_onBulletTime ? 0 : 1));
             Debug.Log($"stiff : {damage} * {m_dashStiffPerDamage}");
             Time.timeScale = m_currentTimeScale;
-            yield return new WaitForSecondsRealtime(m_dashStiffDelay);
+            yield return new WaitForSecondsRealtime(m_dashStiffDelay * (m_onBulletTime ? 0 : 1));
 
         }
     }
