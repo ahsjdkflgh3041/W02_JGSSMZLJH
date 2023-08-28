@@ -206,6 +206,13 @@ public class MonsterBase : MonoBehaviour
         m_isHitting = true;
         Utility.ChangeColor(m_renderer, m_hitColor);
 
+        if (m_health.Health <= 0)
+        {
+            ForceChangeState(State.DieState);
+            m_isHitting = false;
+            yield break;
+        }
+
         yield return new WaitForSeconds(m_hitCoolTime);
         Utility.ChangeColor(m_renderer, m_originColor);
         m_isHitting = false;
