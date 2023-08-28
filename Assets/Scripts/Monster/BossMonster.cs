@@ -14,6 +14,7 @@ public class BossMonster : MonsterBase
             for (int i = 0; i < 10; i++) 
             {
                 ShotBullet();
+                yield return new WaitForSeconds(0.2f);
             }
         }   
 
