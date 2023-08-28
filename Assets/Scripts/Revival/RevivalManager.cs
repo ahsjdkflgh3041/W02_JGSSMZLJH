@@ -5,8 +5,10 @@ using UnityEngine.SceneManagement;
 
 public class RevivalManager : MonoBehaviour
 {
-    public static RevivalManager Instance { get; private set; }
-    public Dictionary<int, Vector3> SavePoint { get { return m_savePoints; } private set { } }
+    public static RevivalManager Instance { get { return m_instance; } }
+    static RevivalManager m_instance = new RevivalManager();
+
+    public Dictionary<int, Vector3> SavePoints { get { return m_savePoints; } }
     static Dictionary<int, Vector3> m_savePoints = new Dictionary<int, Vector3>();
 
     GameObject m_player;
@@ -22,8 +24,8 @@ public class RevivalManager : MonoBehaviour
 
     private void Start()
     {
-        m_savePointsIndex = 0;
-        m_savePoints.Add(m_savePointsIndex, m_player.transform.position);
+        InitSavePoints();
+       
     }
 
     public void SaveRevivalPoint(Vector3 _revivalPos)
@@ -40,13 +42,15 @@ public class RevivalManager : MonoBehaviour
         if (m_isGameOver == true)
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-            _go.transform.position = m_savePoints[0];
+            InitSavePoints();
+        }
+        _go.transform.position = m_savePoints[m_savePointsIndex];
+    }
 
-            return;
-        }
-        else
-        {
-            _go.transform.position = m_savePoints[m_savePointsIndex];
-        }
+    private void InitSavePoints()
+    {
+        m_savePoints.Clear();
+        m_savePointsIndex = 0;
+        m_savePoints.Add(m_savePointsIndex, m_player.transform.position);
     }
 }
