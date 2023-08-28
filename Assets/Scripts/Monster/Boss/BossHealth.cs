@@ -31,6 +31,8 @@ public class BossHealth : MonoBehaviour, IDamagable
     {
         if (Health >= 0)
             m_slider.value = (float)Health / m_maxHealth;
+        else
+            m_slider.value = 0;
     }
 
     public void TakeDamage(int damage)
