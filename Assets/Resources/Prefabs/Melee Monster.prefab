@@ -115,7 +115,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a039ca28dcc7c24a9b5f02055cf17d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_meleeDamage: 0
+  m_meleeDamage: 1
 --- !u!50 &4381388745117760475
 Rigidbody2D:
   serializedVersion: 4
@@ -447,7 +447,7 @@ MonoBehaviour:
   m_state: 0
   m_detectRange: 10
   m_attackRange: 1
-  m_attackPower: 3
+  m_attackPower: 1
   m_attackingTime: 1
   m_attackCoolTime: 2
   m_dropItem: {fileID: 7456019442728126548, guid: 35fb82fc740ee674ea23eb46802ef36e, type: 3}
