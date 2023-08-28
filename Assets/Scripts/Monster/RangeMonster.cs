@@ -18,7 +18,7 @@ public class RangeMonster : MonsterBase
 
     void ShotBullet()
     {
-        GameObject bullet = Utility.InstanciatePrefab("Bullet", transform);
+        GameObject bullet = Utility.InstanciatePrefab("Monster/Bullet", transform);
         bullet.GetComponent<Bullet>().m_bulletDamage = m_attackPower;
 
         Vector3 targetDir = (m_target.transform.position - transform.position).normalized;

@@ -30,7 +30,7 @@ public class MonsterBase : MonoBehaviour
     protected Vector3 m_targetDir;
 
     [Header("Status")]
-    [SerializeField] protected float m_detectRange;
+    [SerializeField] public float m_detectRange;
     [SerializeField] protected float m_attackRange;
     [SerializeField] protected int m_attackPower;
 

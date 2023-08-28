@@ -9,7 +9,7 @@ public class MonsterHealth : MonoBehaviour, IDamagable
     MonsterBase m_monsterBase;
     [SerializeField] int m_maxHealth;
 
-    void Start()
+    public void Start()
     {
         m_monsterBase = GetComponent<MonsterBase>();
 
@@ -24,11 +24,6 @@ public class MonsterHealth : MonoBehaviour, IDamagable
             Debug.Log($"{gameObject.name} takes {damage} damage ({Health}/{m_maxHealth}).");
 
             m_monsterBase.ForceChangeState(State.HitState);
-            //if (Health <= 0)
-            //{
-            //    Debug.Log($"{gameObject.name} died!");
-            //    gameObject.SetActive(false);
-            //}
         }
     }
 }
