@@ -135,27 +135,32 @@ public class PlayerController : MonoBehaviour
     {
         if (context.started)
         {
-            //Debug.Log("OnSmash started");
             m_smashInput = true;
-            if (!OnBulletTime && m_attack.CanSmash)
+            if (!OnBulletTime)
             {
-                m_timeController.StartBulletTime();
-                m_canJumpOrDash = false;
-                m_rigidBody.velocity = new Vector2(m_rigidBody.velocity.x, Mathf.Max(m_rigidBody.velocity.y, m_rigidBody.velocity.y / 4));
+                if (m_attack.CanSmash)
+                {
+                    Debug.Log($"CanSmash : {m_attack.CanSmash}");
+                    m_timeController.StartBulletTime();
+                    m_canJumpOrDash = false;
+                    m_rigidBody.velocity = new Vector2(m_rigidBody.velocity.x, Mathf.Max(m_rigidBody.velocity.y, m_rigidBody.velocity.y / 4));
+                }
             }
             else
             {
-                Debug.Log("Cannot smash... : on cooldown");
+
             }
         }
 
         if (context.canceled)
         {
-            //Debug.Log("OnSmash canceled");
             if (OnBulletTime)
             {
-                m_desiredSmash = true;
-                m_timeController.EndBulletTime();
+                if (m_attack.CanSmash)
+                {
+                    m_desiredSmash = true;
+                    m_timeController.EndBulletTime();
+                }
             }
             m_smashInput = false;
         }

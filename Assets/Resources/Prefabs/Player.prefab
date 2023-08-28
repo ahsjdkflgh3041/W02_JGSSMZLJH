@@ -391,7 +391,7 @@ MonoBehaviour:
   m_dashGravity: 1.75
   m_dashPostDelay: 0.25
   m_smashDistance: 12
-  m_smashPreDelay: 0.05
+  m_smashPreDelay: 0
   m_smashGravity: 1.75
   m_smashPostDelay: 0.25
   m_jumpBuffer: 0.2
