@@ -20,6 +20,7 @@ public class PlayerAttack : MonoBehaviour
     //private UIManager uiManager;
     private PlayerGround m_ground;
     private PlayerRayProjector m_rayProjector;
+    private TimeController m_timeController;
 
     private float m_currentStamina;
     private float m_currentSmashCooldown;
@@ -35,6 +36,7 @@ public class PlayerAttack : MonoBehaviour
         // uiManager = FindObjectOfType<UIManager>();
         m_ground = GetComponent<PlayerGround>();
         m_rayProjector = GetComponent<PlayerRayProjector>();
+        m_timeController = FindObjectOfType<TimeController>();
 
         m_currentStamina = m_maxStamina;
         m_currentSmashCooldown = -1;
@@ -65,26 +67,32 @@ public class PlayerAttack : MonoBehaviour
     public void Dash(Vector2 start, Vector2 end)
     {
         m_currentStamina -= m_staminaPerDash;
-
-        var attackables = m_rayProjector.SelectTransforms(start, end, m_attackableLayer).Select(a => a.GetComponent<IDamagable>()).ToList();
-        foreach (var attackable in attackables)
-        {
-            attackable.TakeDamage(m_dashPower);
-        }
-
-        //Debug.Log($"Dash! Stamina = {m_currentStamina}/{m_maxStamina}");
+        PerformAttack(start, end, m_dashPower);
     }
+
     public void Smash(Vector2 start, Vector2 end)
     {
         m_currentSmashCooldown = m_smashCooldown;
+        PerformAttack(start, end, m_smashPower);
+    }
 
-        var attackables = m_rayProjector.SelectTransforms(start, end, m_attackableLayer);
-        Debug.Log(attackables.Count);
-        var result = attackables.Select(a => a.transform.GetComponent<IDamagable>()).ToList();
-        foreach (var attackable in result)
+    void PerformAttack(Vector2 start, Vector2 end, int damage)
+    {
+        var attackables = m_rayProjector.SelectTransforms(start, end, m_attackableLayer).Select(a => a.GetComponent<IDamagable>()).ToList();
+        var damages = InflictDamages(attackables, damage);
+        if (damages.Count > 0)
         {
-            attackable.TakeDamage(m_smashPower);
+            m_timeController.ApplyDashStiff(damages);
         }
-        Debug.Log("Smash operated!");
+    }
+
+    List<int> InflictDamages(List<IDamagable> targets, int damage)
+    {
+        var damages = new List<int>();
+        targets.ForEach(a => {
+            a.TakeDamage(damage);
+            damages.Add(damage);
+        });
+        return damages;
     }
 }

@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour
     PlayerAttack m_attack;
     PlayerInput m_input;
     PlayerRayProjector m_rayProjector;
+    TimeController m_timeController;
 
     [Header("Move")]
     [SerializeField] private float m_speedX;
@@ -41,7 +42,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float m_smashPreDelay;
     [SerializeField] private float m_smashGravity;
     [SerializeField] private float m_smashPostDelay;
-    [SerializeField] private float m_smashBulletTimeSlower;
     [Header("Input")]
     [SerializeField] private float m_jumpBuffer = 0.2f;
     [SerializeField] private float m_smashCriterionTime = 0.2f;
@@ -87,9 +87,8 @@ public class PlayerController : MonoBehaviour
     private bool m_hasJumpedThisFrame;
 
     public bool IsKeyboardAndMouse { get { return m_input.currentControlScheme.Equals(k_keyboardAndMouseString); } }
-    public bool OnBulletTime { get { return m_onBulletTime; } }
     public Vector2 DashDirection { get { return m_dashDirection; } }
-    public float DashDistance { get { return m_onBulletTime ? m_smashDistance : m_dashDistance; } }
+    public float SmashDistance { get { return m_onBulletTime ? m_smashDistance : m_dashDistance; } }
     
 
     void Awake()
@@ -100,6 +99,7 @@ public class PlayerController : MonoBehaviour
         m_attack = GetComponent<PlayerAttack>();
         m_input = GetComponent<PlayerInput>();
         m_rayProjector = GetComponent<PlayerRayProjector>();
+        m_timeController = FindObjectOfType<TimeController>();
 
         m_gravityMultiplier = m_defaultGravity;
         m_defalutTimeScale = Time.timeScale;
@@ -141,6 +141,7 @@ public class PlayerController : MonoBehaviour
             if (!m_onBulletTime && m_attack.CanSmash)
             {
                 m_onBulletTime = true;
+                m_timeController.StartBulletTime();
                 m_canJumpOrDash = false;
                 m_rigidBody.velocity = new Vector2(m_rigidBody.velocity.x, Mathf.Max(m_rigidBody.velocity.y, m_rigidBody.velocity.y / 4));
             }
@@ -156,6 +157,7 @@ public class PlayerController : MonoBehaviour
             if (m_onBulletTime)
             {
                 m_desiredSmash = true;
+                m_timeController.EndBulletTime();
                 m_onBulletTime = false;
             }
             m_smashInput = false;
@@ -176,8 +178,6 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        Time.timeScale = m_onBulletTime ? m_smashBulletTimeSlower : m_defalutTimeScale;
-
         if (IsKeyboardAndMouse)
         {
             var mousePosition = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition);
