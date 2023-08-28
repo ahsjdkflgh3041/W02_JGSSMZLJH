@@ -8,7 +8,7 @@ public class GameScene : SceneBase
     public static GameScene Instance { get { return s_instance; } }
     private static GameScene s_instance = new GameScene();
 
-    public GameObject m_gameOverCanvas;
+    [SerializeField] GameObject m_gameOverCanvas;
     GameObject m_player;
 
     private bool m_isGameOver;
