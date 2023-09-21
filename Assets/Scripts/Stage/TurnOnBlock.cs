@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 public class TurnOnBlock : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class TurnOnBlock : MonoBehaviour
     [SerializeField] private GameObject m_monsterParent;
 
     [SerializeField] private GameObject m_entryDoor;
+
+    [SerializeField] private CinemachineVirtualCamera mapCamera;
 
     // Update is called once per frame
     void Update()
@@ -41,6 +44,10 @@ public class TurnOnBlock : MonoBehaviour
         { 
             m_isEnemyAllDie = true;
             UIManager.Instance.UpdateUIEnemyFirst(m_enemyCount, false);
+            if (mapCamera != null)
+            {
+                mapCamera.Priority = 0;
+            }
         }        
 
     }
@@ -60,6 +67,11 @@ public class TurnOnBlock : MonoBehaviour
             m_enemyCount = m_monsterParent.GetComponentsInChildren<MonsterMove>().Length;
             UIManager.Instance.UpdateUIEnemyFirst(m_enemyCount, m_isPlayerEnter);
             CountEnemy();
+
+            if (mapCamera != null)
+            {
+                mapCamera.Priority = 10;
+            }
         }
     }
 }
