@@ -91,6 +91,9 @@ public class PlayerController : MonoBehaviour
     private bool m_onLeftWall;
     private bool m_hasJumpedThisFrame;
 
+    [Header("VCam")]
+    [SerializeField] private TestVCamBlend baseVCam;
+
     public bool IsKeyboardAndMouse { get { return m_input.currentControlScheme.Equals(k_keyboardAndMouseString); } }
     public Vector2 DashDirection { get { return m_dashDirection; } }
     public float IndicatorDistance { get { return m_smashInput && m_attack.CanSmash ? m_smashDistance : m_dashDistance; } }
@@ -148,6 +151,7 @@ public class PlayerController : MonoBehaviour
     {
         if (context.started)
         {
+            baseVCam.Expand();
             m_smashInput = true;
             if (!OnBulletTime)
             {
@@ -172,6 +176,7 @@ public class PlayerController : MonoBehaviour
                 {
                     m_desiredSmash = true;
                     m_timeController.EndBulletTime();
+                    baseVCam.Reduce();
                 }
             }
             m_smashInput = false;

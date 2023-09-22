@@ -15,14 +15,19 @@ public class TestVCamBlend : MonoBehaviour
     #region PublicMethod
     public void Expand()
     {
-        activeVirtualCamera = (CinemachineVirtualCamera)CinemachineCore.Instance.GetVirtualCamera(0);
-        //activeVirtualCamera.m_Lens.
+        activeVirtualCamera.Priority = 5;
+    }
+
+    public void Reduce()
+    {
+        activeVirtualCamera.Priority = 8;
     }
     #endregion
 
     #region PrivateMethod
     private void Awake()
     {
+        TryGetComponent(out activeVirtualCamera);
     }
     #endregion
 }
