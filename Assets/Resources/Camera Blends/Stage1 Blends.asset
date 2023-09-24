@@ -13,55 +13,22 @@ MonoBehaviour:
   m_Name: Stage1 Blends
   m_EditorClassIdentifier: 
   m_CustomBlends:
-  - m_From: MainVCam
-    m_To: ExpandedVCam
-    m_Blend:
-      m_Style: 2
-      m_Time: 0.5
-      m_CustomCurve:
-        serializedVersion: 2
-        m_Curve: []
-        m_PreInfinity: 0
-        m_PostInfinity: 0
-        m_RotationOrder: 0
-  - m_From: '**ANY CAMERA**'
-    m_To: Stage1-1VCam
+  - m_From: MainVCamLeft
+    m_To: MainVCamRight
     m_Blend:
       m_Style: 1
-      m_Time: 0.5
+      m_Time: 2
       m_CustomCurve:
         serializedVersion: 2
         m_Curve: []
         m_PreInfinity: 0
         m_PostInfinity: 0
         m_RotationOrder: 0
-  - m_From: '**ANY CAMERA**'
-    m_To: 'Stage1-2VCam '
+  - m_From: MainVCamRight
+    m_To: MainVCamLeft
     m_Blend:
       m_Style: 1
-      m_Time: 0.5
-      m_CustomCurve:
-        serializedVersion: 2
-        m_Curve: []
-        m_PreInfinity: 0
-        m_PostInfinity: 0
-        m_RotationOrder: 0
-  - m_From: '**ANY CAMERA**'
-    m_To: Stage1-3VCam
-    m_Blend:
-      m_Style: 1
-      m_Time: 0.5
-      m_CustomCurve:
-        serializedVersion: 2
-        m_Curve: []
-        m_PreInfinity: 0
-        m_PostInfinity: 0
-        m_RotationOrder: 0
-  - m_From: ExpandedVCam
-    m_To: MainVCam
-    m_Blend:
-      m_Style: 2
-      m_Time: 0.5
+      m_Time: 2
       m_CustomCurve:
         serializedVersion: 2
         m_Curve: []

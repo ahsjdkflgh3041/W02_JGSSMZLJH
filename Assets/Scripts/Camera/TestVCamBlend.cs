@@ -15,12 +15,13 @@ public class TestVCamBlend : MonoBehaviour
     #region PublicMethod
     public void Expand()
     {
-        activeVirtualCamera.Priority = 5;
+        activeVirtualCamera.Priority = 9;
     }
 
     public void Reduce()
     {
-        activeVirtualCamera.Priority = 8;
+        Debug.Log("Reduce");
+        activeVirtualCamera.Priority = 5;
     }
     #endregion
 

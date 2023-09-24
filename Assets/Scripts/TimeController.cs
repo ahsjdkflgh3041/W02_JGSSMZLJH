@@ -18,6 +18,8 @@ public class TimeController : MonoBehaviour
     private bool m_onBulletTime;
     private Color m_defaultColor;
 
+    private TestVCamBlend expandedVCam;
+
     public bool OnBulletTime { get { return m_onBulletTime; } }
     public float BulletTimeScale { get { return m_bulletTimeScale; } }
 
@@ -52,6 +54,10 @@ public class TimeController : MonoBehaviour
             ExecuteEndBulletTime();
         }
     }
+    public void SetExpandedVCam(TestVCamBlend _expandedVCam)
+    {
+        expandedVCam = _expandedVCam;
+    }
     IEnumerator EndBulletTimeAfterDelay(float delay)
     {
         Debug.Log($"Coroutine with {delay} seconds started. : {Time.realtimeSinceStartup}");
@@ -67,6 +73,8 @@ public class TimeController : MonoBehaviour
             m_currentTimeScale = m_defalutTimeScale;
             ChangeBacklightAlpha(0);
             ApplyTimeScale();
+            expandedVCam?.Reduce();
+            expandedVCam = null;
         }
     }
 

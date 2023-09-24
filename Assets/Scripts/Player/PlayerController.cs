@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Cinemachine;
 
 public class PlayerController : MonoBehaviour
 {
@@ -92,7 +93,10 @@ public class PlayerController : MonoBehaviour
     private bool m_hasJumpedThisFrame;
 
     [Header("VCam")]
-    [SerializeField] private TestVCamBlend baseVCam;
+    public TestVCamBlend expandedVCam;
+    [SerializeField] private CinemachineVirtualCamera leftCam;
+    [SerializeField] private CinemachineVirtualCamera rightCam;
+    private CinemachineBrain brain;
 
     public bool IsKeyboardAndMouse { get { return m_input.currentControlScheme.Equals(k_keyboardAndMouseString); } }
     public Vector2 DashDirection { get { return m_dashDirection; } }
@@ -113,12 +117,27 @@ public class PlayerController : MonoBehaviour
         m_timeController = FindObjectOfType<TimeController>();
 
         m_gravityMultiplier = m_defaultGravity;
+
+        brain = FindObjectOfType<CinemachineBrain>();
     }
 
     public void OnMove(InputAction.CallbackContext context)
     {
         var inputVector = context.ReadValue<Vector2>();
         m_directionX = inputVector.x;
+
+        /*
+        if (m_directionX > 0)
+        {
+            rightCam.Priority = 8;
+            leftCam.Priority = 7;
+        }
+        else if (m_directionX < 0)
+        {
+            rightCam.Priority = 7;
+            leftCam.Priority = 8;
+        }
+        */
 
         var yDegree = Mathf.Asin(inputVector.y) * Mathf.Rad2Deg;
         if (yDegree >= k_inputCriteriaDegree) { m_directionY = 1; }
@@ -151,7 +170,16 @@ public class PlayerController : MonoBehaviour
     {
         if (context.started)
         {
-            baseVCam.Expand();
+            CinemachineVirtualCamera virtualCamera = brain.ActiveVirtualCamera.VirtualCameraGameObject.GetComponent<CinemachineVirtualCamera>();
+            var parent = virtualCamera.transform.parent;
+            if (parent != null)
+            {
+                expandedVCam = parent.GetComponentInChildren<TestVCamBlend>();
+                if (expandedVCam != null)
+                    expandedVCam.Expand();
+            }
+
+
             m_smashInput = true;
             if (!OnBulletTime)
             {
@@ -176,7 +204,7 @@ public class PlayerController : MonoBehaviour
                 {
                     m_desiredSmash = true;
                     m_timeController.EndBulletTime();
-                    baseVCam.Reduce();
+                    m_timeController.SetExpandedVCam(expandedVCam);
                 }
             }
             m_smashInput = false;

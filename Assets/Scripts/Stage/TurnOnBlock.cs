@@ -70,7 +70,7 @@ public class TurnOnBlock : MonoBehaviour
 
             if (mapCamera != null)
             {
-                mapCamera.Priority = 10;
+                mapCamera.Priority = 8;
             }
         }
     }
